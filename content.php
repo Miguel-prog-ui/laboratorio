@@ -3,9 +3,8 @@ $exercise = isset($_GET['exercise']) ? $_GET['exercise'] : '';
 
 switch($exercise) {
     case '1':
-        $text = 'Ejercicio 1 seleccionado.';
-        $result = '1 + 1 = ' . (1 + 1);
-        break;
+        phpinfo();
+        exit;
     case '2':
         $text = 'Ejercicio 2 seleccionado.';
         $result = '2 * 2 = ' . (2 * 2);
