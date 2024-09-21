@@ -6,8 +6,7 @@ switch($exercise) {
         phpinfo();
         exit;
     case '2':
-        $text = 'Ejercicio 2 seleccionado.';
-        $result = '2 * 2 = ' . (2 * 2);
+        echo "Hola mundo"
         break;
     case '3':
         $text = 'Ejercicio 3 seleccionado.';
