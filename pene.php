@@ -35,48 +35,48 @@
             let result = '';
 
             switch(option) {
-                case 'option1':
-                    text = 'Opción 1 seleccionada.';
+                case 'exercise1':
+                    text = 'Ejercicio 1 seleccionado.';
                     result = '1 + 1 = ' + (1 + 1);
                     break;
-                case 'option2':
-                    text = 'Opción 2 seleccionada.';
+                case 'exercise2':
+                    text = 'Ejercicio 2 seleccionado.';
                     result = '2 * 2 = ' + (2 * 2);
                     break;
-                case 'option3':
-                    text = 'Opción 3 seleccionada.';
+                case 'exercise3':
+                    text = 'Ejercicio 3 seleccionado.';
                     result = '3 - 1 = ' + (3 - 1);
                     break;
-                case 'option4':
-                    text = 'Opción 4 seleccionada.';
+                case 'exercise4':
+                    text = 'Ejercicio 4 seleccionado.';
                     result = '4 / 2 = ' + (4 / 2);
                     break;
-                case 'option5':
-                    text = 'Opción 5 seleccionada.';
+                case 'exercise5':
+                    text = 'Ejercicio 5 seleccionado.';
                     result = '5 + 5 = ' + (5 + 5);
                     break;
-                case 'option6':
-                    text = 'Opción 6 seleccionada.';
+                case 'exercise6':
+                    text = 'Ejercicio 6 seleccionado.';
                     result = '6 * 6 = ' + (6 * 6);
                     break;
-                case 'option7':
-                    text = 'Opción 7 seleccionada.';
+                case 'exercise7':
+                    text = 'Ejercicio 7 seleccionado.';
                     result = '7 - 3 = ' + (7 - 3);
                     break;
-                case 'option8':
-                    text = 'Opción 8 seleccionada.';
+                case 'exercise8':
+                    text = 'Ejercicio 8 seleccionado.';
                     result = '8 / 4 = ' + (8 / 4);
                     break;
-                case 'option9':
-                    text = 'Opción 9 seleccionada.';
+                case 'exercise9':
+                    text = 'Ejercicio 9 seleccionado.';
                     result = '9 + 9 = ' + (9 + 9);
                     break;
-                case 'option10':
-                    text = 'Opción 10 seleccionada.';
+                case 'exercise10':
+                    text = 'Ejercicio 10 seleccionado.';
                     result = '10 * 10 = ' + (10 * 10);
                     break;
                 default:
-                    text = 'Selecciona una opción del menú.';
+                    text = 'Selecciona un ejercicio del menú.';
                     result = '';
             }
 
@@ -86,19 +86,19 @@
 </head>
 <body onload="showContent()">
     <nav>
-        <a href="javascript:void(0)" onclick="showContent('option1')">Opción 1</a>
-        <a href="javascript:void(0)" onclick="showContent('option2')">Opción 2</a>
-        <a href="javascript:void(0)" onclick="showContent('option3')">Opción 3</a>
-        <a href="javascript:void(0)" onclick="showContent('option4')">Opción 4</a>
-        <a href="javascript:void(0)" onclick="showContent('option5')">Opción 5</a>
-        <a href="javascript:void(0)" onclick="showContent('option6')">Opción 6</a>
-        <a href="javascript:void(0)" onclick="showContent('option7')">Opción 7</a>
-        <a href="javascript:void(0)" onclick="showContent('option8')">Opción 8</a>
-        <a href="javascript:void(0)" onclick="showContent('option9')">Opción 9</a>
-        <a href="javascript:void(0)" onclick="showContent('option10')">Opción 10</a>
+        <a href="javascript:void(0)" onclick="showContent('exercise1')">Ejercicio 1</a>
+        <a href="javascript:void(0)" onclick="showContent('exercise2')">Ejercicio 2</a>
+        <a href="javascript:void(0)" onclick="showContent('exercise3')">Ejercicio 3</a>
+        <a href="javascript:void(0)" onclick="showContent('exercise4')">Ejercicio 4</a>
+        <a href="javascript:void(0)" onclick="showContent('exercise5')">Ejercicio 5</a>
+        <a href="javascript:void(0)" onclick="showContent('exercise6')">Ejercicio 6</a>
+        <a href="javascript:void(0)" onclick="showContent('exercise7')">Ejercicio 7</a>
+        <a href="javascript:void(0)" onclick="showContent('exercise8')">Ejercicio 8</a>
+        <a href="javascript:void(0)" onclick="showContent('exercise9')">Ejercicio 9</a>
+        <a href="javascript:void(0)" onclick="showContent('exercise10')">Ejercicio 10</a>
     </nav>
     <div id="content">
-        <p>Selecciona una opción del menú.</p>
+        <p>Selecciona un ejercicio del menú.</p>
     </div>
 </body>
 </html>
