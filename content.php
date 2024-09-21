@@ -6,7 +6,7 @@ switch($exercise) {
         phpinfo();
         exit;
     case '2':
-        echo "Hola mundo"
+        echo "Hola mundo";
         break;
     case '3':
         $text = 'Ejercicio 3 seleccionado.';
