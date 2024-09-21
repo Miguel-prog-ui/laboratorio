@@ -35,25 +35,45 @@
             let result = '';
 
             switch(option) {
-                case 'home':
-                    text = 'Bienvenido a la página de inicio.';
-                    result = '2 + 2 = ' + (2 + 2);
+                case 'option1':
+                    text = 'Opción 1 seleccionada.';
+                    result = '1 + 1 = ' + (1 + 1);
                     break;
-                case 'services':
-                    text = 'Estos son nuestros servicios.';
-                    result = '5 * 3 = ' + (5 * 3);
+                case 'option2':
+                    text = 'Opción 2 seleccionada.';
+                    result = '2 * 2 = ' + (2 * 2);
                     break;
-                case 'about':
-                    text = 'Acerca de nosotros.';
-                    result = '10 / 2 = ' + (10 / 2);
+                case 'option3':
+                    text = 'Opción 3 seleccionada.';
+                    result = '3 - 1 = ' + (3 - 1);
                     break;
-                case 'contact':
-                    text = 'Contáctanos aquí.';
-                    result = '8 - 4 = ' + (8 - 4);
+                case 'option4':
+                    text = 'Opción 4 seleccionada.';
+                    result = '4 / 2 = ' + (4 / 2);
                     break;
-                case 'blog':
-                    text = 'Bienvenido a nuestro blog.';
-                    result = '7 + 6 = ' + (7 + 6);
+                case 'option5':
+                    text = 'Opción 5 seleccionada.';
+                    result = '5 + 5 = ' + (5 + 5);
+                    break;
+                case 'option6':
+                    text = 'Opción 6 seleccionada.';
+                    result = '6 * 6 = ' + (6 * 6);
+                    break;
+                case 'option7':
+                    text = 'Opción 7 seleccionada.';
+                    result = '7 - 3 = ' + (7 - 3);
+                    break;
+                case 'option8':
+                    text = 'Opción 8 seleccionada.';
+                    result = '8 / 4 = ' + (8 / 4);
+                    break;
+                case 'option9':
+                    text = 'Opción 9 seleccionada.';
+                    result = '9 + 9 = ' + (9 + 9);
+                    break;
+                case 'option10':
+                    text = 'Opción 10 seleccionada.';
+                    result = '10 * 10 = ' + (10 * 10);
                     break;
                 default:
                     text = 'Selecciona una opción del menú.';
@@ -66,11 +86,16 @@
 </head>
 <body onload="showContent()">
     <nav>
-        <a href="javascript:void(0)" onclick="showContent('home')">Inicio</a>
-        <a href="javascript:void(0)" onclick="showContent('services')">Servicios</a>
-        <a href="javascript:void(0)" onclick="showContent('about')">Acerca de</a>
-        <a href="javascript:void(0)" onclick="showContent('contact')">Contacto</a>
-        <a href="javascript:void(0)" onclick="showContent('blog')">Blog</a>
+        <a href="javascript:void(0)" onclick="showContent('option1')">Opción 1</a>
+        <a href="javascript:void(0)" onclick="showContent('option2')">Opción 2</a>
+        <a href="javascript:void(0)" onclick="showContent('option3')">Opción 3</a>
+        <a href="javascript:void(0)" onclick="showContent('option4')">Opción 4</a>
+        <a href="javascript:void(0)" onclick="showContent('option5')">Opción 5</a>
+        <a href="javascript:void(0)" onclick="showContent('option6')">Opción 6</a>
+        <a href="javascript:void(0)" onclick="showContent('option7')">Opción 7</a>
+        <a href="javascript:void(0)" onclick="showContent('option8')">Opción 8</a>
+        <a href="javascript:void(0)" onclick="showContent('option9')">Opción 9</a>
+        <a href="javascript:void(0)" onclick="showContent('option10')">Opción 10</a>
     </nav>
     <div id="content">
         <p>Selecciona una opción del menú.</p>
