@@ -3,10 +3,11 @@ $exercise = isset($_GET['exercise']) ? $_GET['exercise'] : '';
 
 switch($exercise) {
     case '1':
+        $text = 'Ejercicio 1 seleccionado.'
         phpinfo();
         exit;
     case '2':
-        $text = 'Eejercicio 2 seleccionado.';
+        $text = 'Ejercicio 2 seleccionado.';
         $result = 'Hola mundo';
         break;
     case '3':
