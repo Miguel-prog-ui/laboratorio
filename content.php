@@ -19,13 +19,48 @@ switch($exercise) {
         $text = 'Ejercicio 4 seleccionado.';
         $result = 'Hola ' . $name;
         break;
-    case '5':
-        $text = 'Ejercicio 5 seleccionado.';
-        $result = '5 + 5 = ' . (5 + 5);
+    case '5'://29
+        echo "<h1>Contador sencillo</h1>";
+        $fp = fopen("counter.txt", "r+"); 
+     $counter = fgets($fp, 7); 
+     echo $counter; 
+     $counter ++; 
+     rewind($fp); 
+     fputs($fp, $counter); 
+     fclose($fp);
         break;
+        
     case '6':
-        $text = 'Ejercicio 6 seleccionado.';
-        $result = '6 * 6 = ' . (6 * 6);
+        $file ="guestbook.txt"; 
+        //¿variable comment definida? ¿Nombre e e-mail no estan vacios? 
+        //if isset($_POST['comment']) && $_POST['name'] ! = "" && $_POST['email'] != "" { 
+         if (isset($_POST['comment']) && isset($_POST['name']) != "" && $_POST['email'] != "") { 
+         $comment = $_POST['comment']; 
+         $name = $_POST['name']; 
+         $email = $_POST['email']; 
+         //El archivo se abre para escritura-lectura 
+         $fp = fopen($file, "r+"); 
+         //Leer todos los datos y almacenar en $old
+         $old = fread ($fp, filesize($file)); 
+         //Se crea el vinculo de e-mail 
+         $email = "<a href=\mailto:$email\">$email</a>"; 
+         //Se incluye la fecha y se le da formato 
+         $dateOfEntry = date ("y-n-j"); 
+         //Ocultar caracteres html, eliminar slashes, mantener saltos de linea 
+         $comment = htmlspecialchars($comment); 
+        // $comment = stripslashes(n12br($comment)); 
+         $comment = stripslashes($comment); 
+         //"Montar la entrada (entry) del libro de visitas 
+         $entry="<p><b>$name</b> ($email) wrote on <i>$dateOfentry</i>;<br>$comment</p>\n"; 
+         //El cursor invisible salta al principio 
+         rewind($fp); 
+         //Escribir en la nueva entrada antes de las antiguas en el archivo: 
+         fputs($fp, "$entry \n $old"); 
+         //cerrar rl archivo 
+         fclose($fp); 
+        } 
+        //Mostrar el archivo completo 
+        readfile($file);
         break;
     case '7':
         $text = 'Ejercicio 7 seleccionado.';
