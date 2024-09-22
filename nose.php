@@ -75,7 +75,7 @@
                     $Name = "Miguel"; 
                     echo "Hola <b>$Name</b>, encantado de conocerte";
                     break;
-                case 5:
+                case 5://29
                     // Opción 3: Incrementa y muestra un contador de sesiones
                     session_start();
                     if (!isset($_SESSION['contador'])) {
@@ -84,7 +84,7 @@
                     $_SESSION['contador']++;
                     echo "Contador: " . $_SESSION['contador'];
                     break;
-                case 6:
+                case 6://30
                     // Opción 6: Formulario para ingresar comentario, nombre y correo electrónico
                     echo '<h1>Libro de visitas</h1>';
                     if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['comment']) && !empty($_POST['name']) && !empty($_POST['email'])) {
@@ -114,9 +114,39 @@
                     }
                     break;
                 case 7:
-                    // Opción 7: Imprime un texto y realiza una división
-                    echo "Texto de la opción 7. División: " . (20 / 4);
-                    break;
+                        // Opción 7: Encuesta de opinión
+                        setcookie("check", 1); // Establece una cookie para verificar si las cookies están habilitadas
+                        if (isset($_POST['submit'])) {
+                            setcookie("vote", 1); // Establece una cookie para indicar que el usuario ha votado
+                        }
+                        echo '<h1>Encuesta</h1>';
+                        echo '<h3>¿Qué opinas de este curso de PHP?</h3>';
+                        echo '<form action="' . $_SERVER['PHP_SELF'] . '?opcion=7" method="post">
+                                <input type="radio" name="reply" value="0"> Excelente, he aprendido mucho.<br>
+                                <input type="radio" name="reply" value="1"> Más o menos, es muy complicado.<br>
+                                <input type="radio" name="reply" value="2"> ¡Bah! para qué quiero aprender PHP<br><br>';
+                        if (empty($_POST['submit']) && empty($_COOKIE['voted'])) {
+                            // Muestra el botón de enviar solo si el formulario no se ha enviado y el usuario no ha votado
+                            echo '<input name="submit" type="submit" value="¡Vota!">';
+                        } else {
+                            echo "<p>Gracias por tu voto.</p>\n";
+                            if (isset($_POST['reply']) && isset($_COOKIE['check']) && empty($_COOKIE['voted'])) {
+                                // Si el formulario se ha enviado, las cookies están habilitadas y el usuario no ha votado
+                                $file = "results.txt"; // Nombre del archivo donde se guardan los resultados
+                                $fp = fopen($file, "r+"); // Abre el archivo para lectura y escritura
+                                $vote = fread($fp, filesize($file)); // Lee el contenido del archivo
+                                $arr_vote = explode(",", $vote); // Convierte la cadena en un array usando la coma como separador
+                                $reply = $_POST['reply']; // Obtiene la respuesta seleccionada en el formulario
+                                $arr_vote[$reply]++; // Incrementa el recuento de la respuesta seleccionada
+                                $vote = implode(",", $arr_vote); // Convierte el array de nuevo en una cadena
+                                rewind($fp); // Mueve el puntero del archivo al principio
+                                fputs($fp, $vote); // Escribe la nueva cadena en el archivo
+                                fclose($fp); // Cierra el archivo
+                            }
+                        }
+                        echo '</form>';
+                        echo '<p>[ <a href="results.txt" target="_blank">Ver resultados de la encuesta</a> ]</p>';
+                        break;
                 case 8:
                     // Opción 8: Imprime un texto y calcula el módulo
                     echo "Texto de la opción 8. Módulo: " . (15 % 4);
