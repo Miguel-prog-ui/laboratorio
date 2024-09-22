@@ -113,7 +113,7 @@
                         echo nl2br(file_get_contents('guestbook.txt'));
                     }
                     break;
-                case 7:
+                case 7://31
                         // Opción 7: Encuesta de opinión
                         setcookie("check", 1); // Establece una cookie para verificar si las cookies están habilitadas
                         if (isset($_POST['submit'])) {
@@ -148,8 +148,31 @@
                         echo '<p>[ <a href="results.txt" target="_blank">Ver resultados de la encuesta</a> ]</p>';
                         break;
                 case 8:
-                    // Opción 8: Imprime un texto y calcula el módulo
-                    echo "Texto de la opción 8. Módulo: " . (15 % 4);
+                    // Opción 8: Cargar y mostrar el feed RSS
+                    // URL del feed RSS
+                    $feedUrl = 'https://www.rollingstone.com/music/music-news/feed/'; 
+
+                    // Función para cargar y mostrar el feed
+                    function fetchRssFeed($url) {
+                        // Cargar el feed
+                        $xml = @simplexml_load_file($url);
+                        
+                        // Verificar si hay errores al cargar el feed
+                        if ($xml === false) {
+                            echo "Error al cargar el feed.";
+                            return;
+                        }
+                        
+                        // Mostrar los elementos del feed
+                        foreach ($xml->channel->item as $item) {
+                            echo '<h2>' . htmlspecialchars($item->title) . '</h2>';
+                            echo '<p>' . htmlspecialchars($item->description) . '</p>';
+                            echo '<a href="' . htmlspecialchars($item->link) . '">Leer más</a><br><br>';
+                        }
+                    }
+
+                    // Llamar a la función con la URL del feed
+                    fetchRssFeed($feedUrl);
                     break;
                 case 9:
                     // Opción 9: Imprime un texto y calcula una potencia
