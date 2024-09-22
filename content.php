@@ -12,11 +12,12 @@ switch($exercise) {
         break;
     case '3':
         $text = 'Ejercicio 3 seleccionado.';
-        $result = '3 - 1 = ' . (3 - 1);
+        $result = '<b>Hola</b> Mundo!';
         break;
     case '4':
+        $name = 'Miguel';
         $text = 'Ejercicio 4 seleccionado.';
-        $result = '4 / 2 = ' . (4 / 2);
+        $result = 'Hola ' . $name;
         break;
     case '5':
         $text = 'Ejercicio 5 seleccionado.';
