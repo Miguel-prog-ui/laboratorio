@@ -63,7 +63,7 @@
                     $Name = "Miguel"; 
                     echo "Hola <b>$Name</b>, encantado de conocerte";
                     break;
-                case 5:
+                case 5://29
                     session_start();
                     if (!isset($_SESSION['contador'])) {
                         $_SESSION['contador'] = 0;
@@ -72,7 +72,37 @@
                     echo "Contador: " . $_SESSION['contador'];
                     break;
                 case 6:
-                    echo "Texto de la opción 6. Multiplicación: " . (7 * 2);
+                        //Guarda el nombre del archivo en la variable 
+                     $file ="guestbook.txt"; 
+                     //¿variable comment definida? ¿Nombre e e-mail no estan vacios? 
+                     //if isset($_POST['comment']) && $_POST['name'] ! = "" && $_POST['email'] != "" { 
+                     if (isset($_POST['comment']) && isset($_POST['name']) != "" && $_POST['email'] != "") { 
+                     $comment = $_POST['comment']; 
+                     $name = $_POST['name']; 
+                     $email = $_POST['email']; 
+                     //El archivo se abre para escritura-lectura 
+                     $fp = fopen($file, "r+"); 
+                     //Leer todos los datos y almacenar en $old
+                     $old = fread ($fp, filesize($file)); 
+                     //Se crea el vinculo de e-mail 
+                     $email = "<a href=\mailto:$email\">$email</a>"; 
+                     //Se incluye la fecha y se le da formato 
+                     $dateOfEntry = date ("y-n-j"); 
+                     //Ocultar caracteres html, eliminar slashes, mantener saltos de linea 
+                     $comment = htmlspecialchars($comment); 
+                     // $comment = stripslashes(n12br($comment)); 
+                     $comment = stripslashes($comment); 
+                     //"Montar la entrada (entry) del libro de visitas 
+                     $entry="<p><b>$name</b> ($email) wrote on <i>$dateOfentry</i>;<br>$comment</p>\n"; 
+                    //El cursor invisible salta al principio 
+                     rewind($fp); 
+                     //Escribir en la nueva entrada antes de las antiguas en el archivo: 
+                     fputs($fp, "$entry \n $old"); 
+                     //cerrar rl archivo 
+                     fclose($fp); 
+                     } 
+                     //Mostrar el archivo completo 
+                     readfile($file);
                     break;
                 case 7:
                     echo "Texto de la opción 7. División: " . (20 / 4);
