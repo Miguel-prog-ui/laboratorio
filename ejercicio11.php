@@ -15,7 +15,7 @@
     // Comparación de igualdad
 
     echo "Compara si 8 es igual a 3 ", "<br>";
-    echo $a == $b ? 'false' : 'true'; // 8 == 3 es false
+    echo $a = $b ? 'false' : 'true'; // 8 == 3 es false
     echo "<br>";
 
     // Comparación de desigualdad
