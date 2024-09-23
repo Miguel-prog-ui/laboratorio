@@ -147,7 +147,7 @@
                         echo '</form>';
                         echo '<p>[ <a href="results.txt" target="_blank">Ver resultados de la encuesta</a> ]</p>';
                         break;
-                case 8:
+                case 8://32
                     // Opción 8: Cargar y mostrar el feed RSS
                     // URL del feed RSS
                     $feedUrl = 'https://www.rollingstone.com/music/music-news/feed/'; 
