@@ -29,7 +29,7 @@ html>
             $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             // Preparar la consulta
-            $sentenciaSQL = $conexion->prepare("INSERT INTO alumnos (nombre, mail, codigocurso) VALUES (:nombre, :mail, :codigocurso)");
+            $sentenciaSQL = $conexion->prepare("INSERT INTO alumnoss (nombre, mail, codigocurso) VALUES (:nombre, :mail, :codigocurso)");
             
             // Vincular los parámetros
             $sentenciaSQL->bindParam(':nombre', $_POST['nombre']);
