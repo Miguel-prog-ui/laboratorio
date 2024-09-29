@@ -4,22 +4,29 @@
 </head> 
 <body> 
 <?php 
-$conexion=mysql_connect("localhost","root","z80") or 
- die("Problemas en la conexion"); 
-mysql_select_db("phpfacil",$conexion) or 
- die("Problemas en la selección de la base de datos"); 
-$registros=mysql_query("select count(alu.codigo) as cantidad, 
- nombrecur from alumnos as alu 
- inner join cursos as cur on cur.codigo=alu.codigocurso 
- group by alu.codigocurso", $conexion) or 
- die("Problemas en el select:".mysql_error()); 
-while ($reg=mysql_fetch_array($registros)) 
-{ 
- echo "Nombre del curso:".$reg['nombrecur']."<br>"; 
- echo "Cantidad de inscriptos:".$reg['cantidad']."<br>"; 
- echo "<hr>"; 
-} 
-mysql_close($conexion); 
+$conexion = new mysqli("localhost", "root", "", "phpfacil");
+
+if ($conexion->connect_error) {
+    die("Problemas en la conexión: " . $conexion->connect_error);
+}
+
+$sql = "SELECT COUNT(alu.codigo) AS cantidad, nombrecur 
+        FROM alumnoss AS alu 
+        INNER JOIN cursos AS cur ON cur.codigo = alu.codigocurso 
+        GROUP BY alu.codigocurso";
+
+if ($result = $conexion->query($sql)) {
+    while ($reg = $result->fetch_assoc()) {
+        echo "Nombre del curso: " . $reg['nombrecur'] . "<br>";
+        echo "Cantidad de inscriptos: " . $reg['cantidad'] . "<br>";
+        echo "<hr>";
+    }
+    $result->free();
+} else {
+    die("Problemas en el select: " . $conexion->error);
+}
+
+$conexion->close();
 ?> 
 </body> 
 </html>
