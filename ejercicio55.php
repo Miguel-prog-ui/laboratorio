@@ -17,7 +17,7 @@ if ($conexion->connect_error) {
 }
 
 $sql = "SELECT alu.codigo AS codigo, nombre, mail, codigocurso, nombrecur 
-        FROM alumnos AS alu 
+        FROM alumnoss AS alu 
         INNER JOIN cursos AS cur ON cur.codigo = alu.codigocurso 
         LIMIT ?, 2";
 

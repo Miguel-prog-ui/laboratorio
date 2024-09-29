@@ -5,7 +5,7 @@ html>
 <body>
 <?php 
 $host = "localhost";
-$bd = "agenda";
+$bd = "phpfacil";
 $usuario = "root";
 $contra = "";
 
@@ -17,7 +17,7 @@ try {
     // Comprobar que los datos se han enviado
     if (isset($_REQUEST['nombre']) && isset($_REQUEST['mail']) && isset($_REQUEST['codigocurso'])) {
         // Preparar la consulta
-        $sentenciaSQL = $conexion->prepare("INSERT INTO alumnosd (nombre, mail, codigocurso) VALUES (:nombre, :mail, :codigocurso)");
+        $sentenciaSQL = $conexion->prepare("INSERT INTO alumnoss (nombre, mail, codigocurso) VALUES (:nombre, :mail, :codigocurso)");
         
         // Vincular los parámetros
         $sentenciaSQL->bindParam(':nombre', $_REQUEST['nombre']);
