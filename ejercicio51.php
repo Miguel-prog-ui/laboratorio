@@ -11,7 +11,7 @@ if ($conexion->connect_error) {
     die("Problemas en la conexión: " . $conexion->connect_error);
 }
 
-$sql = "SELECT COUNT(*) AS cantidad FROM alumnos";
+$sql = "SELECT COUNT(*) AS cantidad FROM alumnoss";
 
 if ($resultado = $conexion->query($sql)) {
     $reg = $resultado->fetch_assoc();

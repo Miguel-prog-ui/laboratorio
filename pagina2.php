@@ -12,7 +12,7 @@ if ($conexion->connect_error) {
 }
 
 $mail = $_REQUEST['mail'];
-$sql = "SELECT * FROM alumnos WHERE mail = ?";
+$sql = "SELECT * FROM alumnoss WHERE mail = ?";
 if ($stmt = $conexion->prepare($sql)) {
     $stmt->bind_param("s", $mail);
     $stmt->execute();

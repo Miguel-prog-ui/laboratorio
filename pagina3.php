@@ -14,7 +14,7 @@ if ($conexion->connect_error) {
 $codigocurso = $_REQUEST['codigocurso'];
 $mailviejo = $_REQUEST['mailviejo'];
 
-$sql = "UPDATE alumnos SET codigocurso = ? WHERE mail = ?";
+$sql = "UPDATE alumnoss SET codigocurso = ? WHERE mail = ?";
 if ($stmt = $conexion->prepare($sql)) {
     $stmt->bind_param("is", $codigocurso, $mailviejo);
     if ($stmt->execute()) {
