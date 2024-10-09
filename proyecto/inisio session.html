@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Inicio de Sesión</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            padding: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+            display: none; /* Oculta los formularios por defecto */
+        }
+
+        /* Muestra el formulario activo */
+        #login:checked ~ #login-box,
+        #register:checked ~ #register-box {
+            display: block;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .user-box {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .user-box input {
+            width: 100%;
+            padding: 10px 0;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 30px;
+            border: none;
+            border-bottom: 1px solid #333;
+            outline: none;
+            background: transparent;
+        }
+
+        .user-box label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 10px 0;
+            font-size: 16px;
+            color: #333;
+            pointer-events: none;
+            transition: 0.5s;
+        }
+
+        .user-box input:focus ~ label,
+        .user-box input:valid ~ label {
+            top: -20px;
+            left: 0;
+            color: #333;
+            font-size: 12px;
+        }
+
+        button {
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #555;
+        }
+
+        .register-link, .login-link {
+            margin-top: 20px;
+        }
+
+        .register-link a, .login-link a {
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .register-link a:hover, .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Oculta los inputs de tipo radio */
+        #login, #register {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Inputs de tipo radio para controlar la visibilidad de los formularios -->
+    <input type="radio" id="login" name="form-toggle" checked>
+    <input type="radio" id="register" name="form-toggle">
+
+    <!-- Formulario de inicio de sesión -->
+    <div class="container" id="login-box">
+        <h2>Iniciar Sesión</h2>
+        <form action="iniciarsesion.php" method="post">
+            <div class="user-box">
+                <input type="text" name="nombreusuario" required>
+                <label>Nombre de Usuario</label>
+            </div>
+            <div class="user-box">
+                <input type="password" name="contraseña" required>
+                <label>Contraseña</label>
+            </div>
+            <button type="submit">Ingresar</button>
+            <p class="register-link">¿No tienes una cuenta? <label for="register">Crear una cuenta</label></p>
+        </form>
+    </div>
+
+    <!-- Formulario de registro -->
+    <div class="container" id="register-box">
+        <h2>Crear Cuenta</h2>
+        <form action="crearcuenta.php" method="post">
+            <div class="user-box">
+                <input type="text" name="nombre" required>
+                <label>Nombre</label>
+            </div>
+            <div class="user-box">
+                <input type="text" name="apellido" required>
+                <label>Apellido</label>
+            </div>
+            <div class="user-box">
+                <input type="tel" name="num_tlfn" required>
+                <label>Número de Teléfono</label>
+            </div>
+            <div class="user-box">
+                <input type="email" name="mail" required>
+                <label>Correo Electrónico</label>
+            </div>
+            <div class="user-box">
+                <input type="text" name="nombreusuario" required>
+                <label>Nombre de Usuario</label>
+            </div>
+            <div class="user-box">
+                <input type="password" name="contraseña" required>
+                <label>Contraseña</label>
+            </div>
+            <button type="submit">Registrar</button>
+            <p class="login-link">¿Ya tienes una cuenta? <label for="login">Iniciar sesión</label></p>
+        </form>
+    </div>
+</body>
+</html>
