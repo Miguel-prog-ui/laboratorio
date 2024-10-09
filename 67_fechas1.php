@@ -19,34 +19,37 @@ if ($conexion->connect_error) {
     die("Problemas en la conexión: " . $conexion->connect_error);
 }
 
-// Escapar variables para evitar inyección SQL
-$nombre = $_REQUEST['nombre'];
-$mail = $_REQUEST['mail'];
-$codigocurso = $_REQUEST['codigocurso'];
-$dia = (int)$_REQUEST['dia'];
-$mes = (int)$_REQUEST['mes'];
-$anio = (int)$_REQUEST['anio'];
+// Verificar y escapar variables para evitar inyección SQL
+$nombre = isset($_REQUEST['nombre']) ? $conexion->real_escape_string($_REQUEST['nombre']) : null;
+$apellido = isset($_REQUEST['apellido']) ? $conexion->real_escape_string($_REQUEST['apellido']) : null;
+$mail = isset($_REQUEST['mail']) ? $conexion->real_escape_string($_REQUEST['mail']) : null;
+$codigocurso = isset($_REQUEST['codigocurso']) ? $conexion->real_escape_string($_REQUEST['codigocurso']) : null;
+$dia = isset($_REQUEST['dia']) ? (int)$_REQUEST['dia'] : null;
+$mes = isset($_REQUEST['mes']) ? (int)$_REQUEST['mes'] : null;
+$anio = isset($_REQUEST['anio']) ? (int)$_REQUEST['anio'] : null;
 
-// Verificar si la fecha es válida
-if (checkdate($mes, $dia, $anio)) {
-    $fechanacimiento = "$anio-$mes-$dia";
-    $sql = $conexion->prepare("INSERT INTO alumnoss (nombre, mail, codigocurso, fechanac) VALUES (?, ?, ?, ?)");
-    $sql->bind_param("ssss", $nombre, $mail, $codigocurso, $fechanacimiento);
-    
-    if ($sql->execute() === TRUE) {
-        echo "El alumno fue dado de alta.";
+// Verificar si todas las variables están definidas
+if ($nombre && $apellido && $mail && $codigocurso && $dia && $mes && $anio) {
+    // Verificar si la fecha es válida
+    if (checkdate($mes, $dia, $anio)) {
+        $fechanacimiento = "$anio-$mes-$dia";
+        $sql = "INSERT INTO alumnos (nombre, apellido, gmail, curso, fechanac) VALUES ('$nombre', '$apellido', '$mail', '$codigocurso', '$fechanacimiento')";
+        if ($conexion->query($sql) === TRUE) {
+            echo "El alumno fue dado de alta.";
+        } else {
+            echo "Problemas en el insert: " . $conexion->error;
+        }
     } else {
-        die("Problemas en el insert: " . $sql->error);
+        echo "Fecha de nacimiento no válida.";
     }
-    $sql->close();
 } else {
-    echo "Fecha de nacimiento no válida.";
+    echo "Faltan datos necesarios.";
 }
 
 // Cerrar conexión
 $conexion->close();
 ?>
 <br>
-<a href="67_fechas2.php">Ver listado de alumnoss</a>
+<a href="67_fechas2.php">Ver listado de alumnos</a>
 </body>
 </html>
