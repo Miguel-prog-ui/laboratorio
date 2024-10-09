@@ -27,6 +27,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    
 
 ?>
-<a href="66_checkdate.html">volver para ingresar fecha</a>
+<a href="ejercicio66.php">volver para ingresar fecha</a>
 </body>
 </html>
