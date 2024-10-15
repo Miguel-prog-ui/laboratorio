@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Usuarios</title>
+</head>
+<body>
+    <h2>Registro de Usuarios</h2>
+    <form action="BBBB.php" method="post">
+        <input type="text" name="nombre" ><br><br>
+        <input type="text" name="apellido" ><br><br>
+        <input type="text" name="cedula" ><br><br>
+        <input type="text" name="deportes" ><br><br>
+        <input type="text" name="equipos" ><br><br>
+        
+        <input type="submit" value="Registrar">
+    </form>
+</body>
+</html>
+
+

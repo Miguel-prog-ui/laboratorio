@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Inicio de Sesión</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #A8E6CF, #DCEDC8);
+            margin: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+        }
+        .container:hover {
+            transform: translateY(-10px);
+        }
+        input[type="text"], input[type="password"], input[type="email"], button {
+            margin: 15px 0;
+            padding: 15px;
+            width: 100%;
+            max-width: 320px;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+        input:focus {
+            border-color: #76C7C0;
+            outline: none;
+        }
+        button {
+            background-color: #76C7C0;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #5AAEAA;
+        }
+        .register-link {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .register-link a {
+            color: #76C7C0;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script>
+        function showRegisterForm() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+    </script>
+</head>
+<body>
+    <div class="container" id="loginForm">
+        <h2>Iniciar Sesión</h2>
+        <form method="POST" action="login.php">
+            <input type="text" name="nombreusuario" placeholder="Nombre de Usuario" required>
+            <input type="password" name="contraseña" placeholder="Contraseña" required>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+        <div class="register-link">
+            <p>¿No tienes cuenta? <a onclick="showRegisterForm()">Crear una</a></p>
+        </div>
+    </div>
+
+    <div class="container hidden" id="registerForm">
+        <h2>Crear Cuenta</h2>
+        <form method="POST" action="register.php">
+            <input type="text" name="nombre" placeholder="Nombre" required>
+            <input type="text" name="apellido" placeholder="Apellido" required>
+            <input type="text" name="num_tlfn" placeholder="Número de Teléfono" required>
+            <input type="email" name="mail" placeholder="Correo Electrónico" required>
+            <input type="text" name="nombreusuario" placeholder="Nombre de Usuario" required>
+            <input type="password" name="contraseña" placeholder="Contraseña" required>
+            <button type="submit">Registrar</button>
+        </form>
+    </div>
+</body>
+</html>
