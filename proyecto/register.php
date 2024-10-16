@@ -25,10 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             VALUES ('$nombre', '$apellido', '$num_tlfn', '$mail', '$nombreusuario', '$contraseña')";
 
     if ($conn->query($sql) === TRUE) {
-        echo "<p style='text-align: center;'>Registro exitoso. <a href='index.html'>Iniciar sesión</a></p>";
+        echo "<p style='text-align: center;'>Registro exitoso. <a href='monda.html'>Iniciar sesión</a></p>";
     } else {
         echo "<p style='text-align: center;'>Error: " . $sql . "<br>" . $conn->error . "</p>";
-        echo "<p style='text-align: center;'><a href='index.html'>Volver a intentar</a></p>";
+        echo "<p style='text-align: center;'><a href='monda.html'>Volver a intentar</a></p>";
     }
 }
 

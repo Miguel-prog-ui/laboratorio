@@ -25,6 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
                 if (password_verify($contraseña, $row['contraseña'])) {
+                    // Redirigir al menú
+                    header("Location: menu.php");
+                    exit();
                     echo "<h2 style='text-align: center;'>Usuario y contraseña son correctos</h2>";
                 } else {
                     echo "<h2 style='text-align: center;'>La contraseña es incorrecta</h2>";
