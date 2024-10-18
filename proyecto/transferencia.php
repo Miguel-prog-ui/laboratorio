@@ -1,27 +1,49 @@
 <?php session_start(); ?>
 <?php include 'db_connect.php'; // Conectar a la base de datos ?>
 <?php
-// Obtener el nombre de usuario de la sesión
 $nombreusuario = $_SESSION['nombreusuario'];
 $message = ""; // Variable para el mensaje
 
-// Procesar el formulario de depósito
+// Procesar el formulario de transferencia
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $destinatario = $_POST['destinatario'];
+    $correo = $_POST['correo'];
     $monto = $_POST['monto'];
     $contraseña = $_POST['contraseña'];
 
-    // Verificar la contraseña del usuario
-    $sql = "SELECT contraseña FROM usuarios WHERE nombreusuario = '$nombreusuario'";
+    // Verificar la contraseña del usuario que realiza la transferencia
+    $sql = "SELECT contraseña, saldo FROM usuarios WHERE nombreusuario = '$nombreusuario'";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
+        $saldo = $row['saldo'];
         if (password_verify($contraseña, $row['contraseña'])) {
-            // Actualizar el saldo del usuario
-            $sql = "UPDATE usuarios SET saldo = saldo + $monto WHERE nombreusuario = '$nombreusuario'";
-            if ($conn->query($sql) === TRUE) {
-                $message = "<h2 style='color: green;'>Depósito realizado con éxito. Saldo actualizado.</h2>";
+            // Verificar que el destinatario existe y que el correo coincide
+            $sql = "SELECT saldo FROM usuarios WHERE nombreusuario = '$destinatario' AND mail = '$correo'";
+            $result = $conn->query($sql);
+            if ($result->num_rows > 0) {
+                // Realizar la transferencia
+                $conn->begin_transaction();
+                try {
+                    // Restar el saldo del usuario que realiza la transferencia
+                    $sql = "UPDATE usuarios SET saldo = saldo - $monto WHERE nombreusuario = '$nombreusuario'";
+                    if ($conn->query($sql) !== TRUE) {
+                        throw new Exception("Error al restar saldo: " . $conn->error);
+                    }
+                    // Sumar el saldo al destinatario
+                    $sql = "UPDATE usuarios SET saldo = saldo + $monto WHERE nombreusuario = '$destinatario'";
+                    if ($conn->query($sql) !== TRUE) {
+                        throw new Exception("Error al sumar saldo: " . $conn->error);
+                    }
+                    // Confirmar transacción
+                    $conn->commit();
+                    $message = "<h2 style='color: green;'>Transferencia realizada con éxito. Saldo actualizado.</h2>";
+                } catch (Exception $e) {
+                    $conn->rollback();
+                    $message = "<h2 style='color: red;'>Error durante la transferencia: " . $e->getMessage() . "</h2>";
+                }
             } else {
-                $message = "<h2 style='color: red;'>Error al actualizar el saldo: " . $conn->error . "</h2>";
+                $message = "<h2 style='color: red;'>Destinatario no encontrado o correo incorrecto.</h2>";
             }
         } else {
             $message = "<h2 style='color: red;'>Contraseña incorrecta.</h2>";
@@ -37,7 +59,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Depósito</title>
+    <title>Transferencia</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -98,6 +120,8 @@ $conn->close();
         .form-container:hover {
             transform: scale(1.05); /* Efecto de zoom al pasar el mouse */
         }
+        .form-container input[type="text"],
+        .form-container input[type="email"],
         .form-container input[type="number"],
         .form-container input[type="password"],
         .form-container button {
@@ -120,7 +144,7 @@ $conn->close();
 </head>
 <body>
     <div class="header-bar">
-        <span>DEPÓSITO</span>
+        <span>TRANSFERENCIA</span>
     </div>
     <div class="navbar">
         <a href="menu.php">Inicio</a>
@@ -128,16 +152,18 @@ $conn->close();
         <a href="deposito.php">Depósito</a>
         <a href="transferencia.php">Transferencia</a>
         <a href="#">Opción 4</a>
-        <a href="monda.html">Cerrar sesión</a>
+        <a href="monda.php">Cerrar sesión</a>
     </div>
     <div class="container">
         <div class="form-container">
-            <h2>Depositar Fondos</h2>
+            <h2>Transferir Fondos</h2>
             <?php echo $message; ?> <!-- Mostrar el mensaje aquí -->
-            <form method="POST" action="deposito.php">
-                <input type="number" name="monto" placeholder="Monto a depositar" required>
+            <form method="POST" action="transferencia.php">
+                <input type="text" name="destinatario" placeholder="Usuario destino" required>
+                <input type="email" name="correo" placeholder="Correo del destinatario" required>
+                <input type="number" name="monto" placeholder="Monto a transferir" required>
                 <input type="password" name="contraseña" placeholder="Contraseña" required>
-                <button type="submit">Depositar</button>
+                <button type="submit">Transferir</button>
             </form>
         </div>
     </div>
