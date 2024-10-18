@@ -13,38 +13,36 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            background: #f4f4f4; /* Fondo gris claro */
+            background: #fafafa; /* Fondo gris muy claro */
         }
         .header-bar {
-            background: #76C7C0; /* Verde claro */
+            background: #333; /* Gris oscuro */
             height: 50px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 20px;
+            font-size: 18px;
             color: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .navbar {
-            background-color: #3A3A3A; /* Gris oscuro */
-            padding: 15px 20px;
+            background-color: white; /* Blanco para minimalismo */
+            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .navbar a {
-            color: white;
+            color: #333; /* Gris oscuro */
             text-decoration: none;
             font-weight: bold;
-            margin: 0 10px;
+            margin: 0 15px;
             font-size: 16px;
-        }
-        .navbar a:first-child {
-            font-size: 20px;
+            transition: color 0.3s ease-in-out; /* Transición suave */
         }
         .navbar a:hover {
-            color: #A8D5BA;
+            color: #76C7C0; /* Verde claro al pasar el mouse */
         }
         .container {
             flex: 1;
@@ -59,7 +57,11 @@
             margin-bottom: 20px;
         }
         .highlight {
-            color: #A8D5BA;
+            color: #333;
+            background-color: #76C7C0; /* Fondo de resaltado */
+            padding: 5px 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -73,7 +75,7 @@
         <a href="deposito.php">Depósito</a>
         <a href="#">Opción 3</a>
         <a href="#">Opción 4</a>
-        <a href="monda.html">cerrar sesion</a>
+        <a href="monda.html">Cerrar sesión</a>
     </div>
     <div class="container">
         <div class="welcome">

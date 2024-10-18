@@ -1,7 +1,6 @@
+<?php session_start(); ?>
+<?php include 'db_connect.php'; // Conectar a la base de datos ?>
 <?php
-session_start();
-include 'db_connect.php'; // Conectar a la base de datos
-
 // Obtener el nombre de usuario de la sesión
 $nombreusuario = $_SESSION['nombreusuario'];
 $message = ""; // Variable para el mensaje
@@ -14,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar la contraseña del usuario
     $sql = "SELECT contraseña FROM usuarios WHERE nombreusuario = '$nombreusuario'";
     $result = $conn->query($sql);
-
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         if (password_verify($contraseña, $row['contraseña'])) {
@@ -32,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $message = "<h2 style='color: red;'>Usuario no encontrado.</h2>";
     }
 }
-
 $conn->close();
 ?>
 <!DOCTYPE html>
@@ -49,38 +46,36 @@ $conn->close();
             display: flex;
             flex-direction: column;
             height: 100vh;
-            background: #f4f4f4; /* Fondo gris claro */
+            background: #fafafa; /* Fondo gris muy claro */
         }
         .header-bar {
-            background: #76C7C0; /* Verde claro */
+            background: #333; /* Gris oscuro */
             height: 50px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 20px;
+            font-size: 18px;
             color: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .navbar {
-            background-color: #3A3A3A; /* Gris oscuro */
-            padding: 15px 20px;
+            background-color: white; /* Blanco para minimalismo */
+            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .navbar a {
-            color: white;
+            color: #333; /* Gris oscuro */
             text-decoration: none;
             font-weight: bold;
-            margin: 0 10px;
+            margin: 0 15px;
             font-size: 16px;
-        }
-        .navbar a:first-child {
-            font-size: 20px;
+            transition: color 0.3s ease-in-out; /* Transición suave */
         }
         .navbar a:hover {
-            color: #A8D5BA;
+            color: #76C7C0; /* Verde claro al pasar el mouse */
         }
         .container {
             flex: 1;
@@ -95,14 +90,15 @@ $conn->close();
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            width: 100%;
+            max-width: 400px; /* Ancho máximo */
             text-align: center;
         }
         .form-container input[type="number"],
         .form-container input[type="password"],
         .form-container button {
-            width: 100%;
-            margin: 10px 0;
+            width: calc(100% - 50px); /* Reduce el ancho del campo */
+            margin: 10px 10px; /* Añade márgenes más pequeños */
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -128,7 +124,7 @@ $conn->close();
         <a href="deposito.php">Depósito</a>
         <a href="#">Opción 3</a>
         <a href="#">Opción 4</a>
-        <a href="monda.php">cerrar sesion</a>
+        <a href="monda.php">Cerrar sesión</a>
     </div>
     <div class="container">
         <div class="form-container">
