@@ -70,14 +70,22 @@
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('registerForm').classList.remove('hidden');
         }
+
+        function printGoodbye() {
+            document.body.innerHTML = '<h2>chao</h2>';
+        }
+
+        function showMessage() {
+            document.body.innerHTML = '<h2>hola</h2>';
+        }
     </script>
 </head>
 <body>
     <div class="container" id="loginForm">
         <h2>Iniciar Sesión</h2>
         <form method="POST" action="login.php">
-            <input type="text" name="nombreusuario" placeholder="Nombre de Usuario" required>
-            <input type="password" name="contraseña" placeholder="Contraseña" required>
+            <input type="text" name="nombreusuario" placeholder="Usuario" required>
+            <input type="password" name="contrasena" placeholder="Contraseña" required>
             <button type="submit">Iniciar Sesión</button>
         </form>
         <div class="register-link">
@@ -87,13 +95,13 @@
 
     <div class="container hidden" id="registerForm">
         <h2>Crear Cuenta</h2>
-        <form method="POST" action="register.php">
+        <form method="POST" action="registro.php">
             <input type="text" name="nombre" placeholder="Nombre" required>
             <input type="text" name="apellido" placeholder="Apellido" required>
             <input type="text" name="num_tlfn" placeholder="Número de Teléfono" required>
             <input type="email" name="mail" placeholder="Correo Electrónico" required>
             <input type="text" name="nombreusuario" placeholder="Nombre de Usuario" required>
-            <input type="password" name="contraseña" placeholder="Contraseña" required>
+            <input type="password" name="Contraseña" placeholder="Contraseña" required>
             <button type="submit">Registrar</button>
         </form>
     </div>

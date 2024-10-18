@@ -1,4 +1,14 @@
-<?php session_start(); ?>
+<?php
+session_start();
+include 'db_connect.php'; // Conectar a la base de datos
+
+// Obtener el nombre de usuario de la sesión
+$nombreusuario = $_SESSION['nombreusuario'];
+
+// Consulta para obtener el saldo del usuario
+$sql = "SELECT saldo FROM usuarios WHERE nombreusuario = '$nombreusuario'";
+$result = $conn->query($sql);
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -54,32 +64,48 @@
             align-items: center;
             padding: 20px;
         }
-        .welcome {
-            text-align: center;
+        .saldo {
+            font-size: 50px;
+            color: #4CAF50;
+        }
+        .header {
+            font-size: 24px;
             margin-bottom: 20px;
+            color: #333;
         }
         .highlight {
-            color: #A8D5BA;
+            color: #76C7C0; /* Color verde */
+        }
+        .error {
+            font-size: 20px;
+            color: red;
         }
     </style>
 </head>
 <body>
     <div class="header-bar">
-        <span>BIENVENIDO A NUESTRO BANCO</span>
+        <span>CONSULTAR SALDO</span>
     </div>
     <div class="navbar">
-        <a href="#">Inicio</a>
+        <a href="menu.php">Inicio</a>
         <a href="saldo.php">Consultar Saldo</a>
-        <a href="deposito.php">Depósito</a>
+        <a href="deposito.php">Deposito</a>
         <a href="#">Opción 3</a>
         <a href="#">Opción 4</a>
         <a href="monda.html">cerrar sesion</a>
     </div>
     <div class="container">
-        <div class="welcome">
-            <h2>Bienvenido al Menú Principal</h2>
-            <p>Estamos encantados de verte de nuevo. Aquí puedes explorar diferentes opciones para encontrar exactamente lo que necesitas. <span class="highlight">¡Disfruta de tu experiencia!</span></p>
-        </div>
+        <?php
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $saldo = $row['saldo'];
+            echo "<div class='header'>Saldo</div>";
+            echo "<div class='saldo'>$$saldo</div>";
+        } else {
+            echo "<div class='header highlight'>No se encontró el saldo del usuario.</div>";
+        }
+        $conn->close();
+        ?>
     </div>
 </body>
 </html>
