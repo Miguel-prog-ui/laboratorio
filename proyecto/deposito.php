@@ -87,11 +87,11 @@ $conn->close();
         }
         .form-container {
             background-color: white;
-            padding: 20px;
+            padding: 40px; /* Más espacio */
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 400px; /* Ancho máximo */
+            max-width: 500px; /* Ancho máximo aumentado */
             text-align: center;
             transition: transform 0.3s ease-in-out; /* Animación suave */
         }
@@ -103,7 +103,8 @@ $conn->close();
         .form-container button {
             width: calc(100% - 30px); /* Reduce el ancho del campo */
             margin: 10px 10px; /* Márgenes más pequeños */
-            padding: 10px;
+            padding: 12px; /* Aumenta el padding */
+            font-size: 16px; /* Aumenta el tamaño del texto */
             border: 1px solid #ccc;
             border-radius: 20px; /* Bordes redondeados */
         }
