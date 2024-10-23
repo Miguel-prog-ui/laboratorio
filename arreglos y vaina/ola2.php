@@ -193,7 +193,7 @@
             echo "</pre></div>";
         }
         ?>
-                <h2>Grafos</h2>
+        <h2>Grafos</h2>
         <form method="post" class="form-container">
             <label for="vertices">Ingrese los vértices (separados por comas):</label>
             <input type="text" id="vertices" name="vertices" required>
@@ -217,7 +217,7 @@
                     $this->vertices[] = $vertice;
                     $this->aristas[$vertice] = array();
                 }
-                public function aregar_aristas($vertice1, $vertice2) {
+                public function agregar_aristas($vertice1, $vertice2) {
                     $this->aristas[$vertice1][] = $vertice2;
                     $this->aristas[$vertice2][] = $vertice1;
                 }
@@ -237,13 +237,14 @@
             }
             foreach ($aristas as $arista) {
                 list($v1, $v2) = explode('-', $arista);
-                $migrafo->aregar_aristas(trim($v1), trim($v2));
+                $migrafo->agregar_aristas(trim($v1), trim($v2));
             }
             echo "<div class='code-block'><pre>";
             $migrafo->imprimir_grafo();
             echo "</pre></div>";
         }
         ?>
+
 
 
     </div>

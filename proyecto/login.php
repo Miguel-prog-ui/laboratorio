@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 } else {
                     echo "<h2 style='text-align: center;'>La contraseña es incorrecta</h2>";
                     echo "<p style='text-align: center;'><a href='monda.html'>Volver a intentar</a></p>";
-                }
+                } 
             } else {
                 echo "<h2 style='text-align: center;'>El usuario no existe</h2>";
                 echo "<p style='text-align: center;'><a href='monda.html'>Volver a intentar</a></p>";
