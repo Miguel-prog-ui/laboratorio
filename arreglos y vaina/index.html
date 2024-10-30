@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarea</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+        }
+        .a {
+            max-width: 900px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: #000;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #000;
+            font-size: 1.5em;
+            border-bottom: 2px solid #000;
+            padding-bottom: 5px;
+            margin-top: 20px;
+        }
+        pre {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .code-block {
+            border-left: 4px solid #000;
+            padding-left: 10px;
+            margin: 10px 0;
+        }
+        .highlight {
+            background-color: #ffd700;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="a">
+        <h1>Estructura de datos</h1>
+
+        {% for estructura in estructura_compuesta %}
+            <h2>{{ estructura.tipo }}</h2>
+            <div class="code-block">
+                <pre>
+                    {% if estructura.tipo == "Pilas" %}
+                        Antes de sacar el elemento:
+                        {{ estructura.datos }}
+                        <br>
+                        Después de sacar el elemento:
+                        {{ estructura.datos }}
+                        <br>
+                        Último elemento sacado de la pila: <span class="highlight">{{ estructura.ultimo }}</span>
+                    {% elif estructura.tipo == "Colas" %}
+                        Todos los clientes en la cola:
+                        {{ estructura.datos }}
+                        <br>
+                        Ya pasó el primer cliente:
+                        {{ estructura.datos }}
+                        <br>
+                        Primer cliente fuera de la cola es: <span class="highlight">{{ estructura.primero }}</span>
+                    {% else %}
+                        {{ estructura.datos }}
+                    {% endif %}
+                </pre>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
