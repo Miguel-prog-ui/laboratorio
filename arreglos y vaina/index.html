@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tarea</title>
+    <title>Estructuras de Datos</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,7 +12,7 @@
             margin: 0;
             padding: 0;
         }
-        .a {
+        .container {
             max-width: 900px;
             margin: auto;
             background-color: #ffffff;
@@ -20,67 +20,95 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
-        h1 {
+        h1, h2 {
             text-align: center;
             color: #000;
-            font-size: 2em;
-            margin-bottom: 20px;
         }
-        h2 {
-            color: #000;
-            font-size: 1.5em;
-            border-bottom: 2px solid #000;
-            padding-bottom: 5px;
-            margin-top: 20px;
+        ul, table {
+            list-style-type: none;
+            padding: 0;
+            margin: auto;
+            text-align: center;
+            border-collapse: collapse;
         }
-        pre {
+        ul li, th, td {
             background-color: #e9ecef;
-            padding: 15px;
+            margin: 5px 0;
+            padding: 10px;
             border-radius: 5px;
-            overflow-x: auto;
+            border: 1px solid black;
         }
-        .code-block {
-            border-left: 4px solid #000;
-            padding-left: 10px;
-            margin: 10px 0;
+        form {
+            text-align: center;
+            margin-top: 10px;
         }
-        .highlight {
-            background-color: #ffd700;
-            padding: 2px 4px;
-            border-radius: 4px;
+        input[type="text"] {
+            padding: 5px;
+            font-size: 1em;
+        }
+        button {
+            padding: 5px 10px;
+            font-size: 1em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <div class="a">
-        <h1>Estructura de datos</h1>
+    <div class="container">
+        <h1>Estructuras de Datos</h1>
 
-        {% for estructura in estructura_compuesta %}
-            <h2>{{ estructura.tipo }}</h2>
-            <div class="code-block">
-                <pre>
-                    {% if estructura.tipo == "Pilas" %}
-                        Antes de sacar el elemento:
-                        {{ estructura.datos }}
-                        <br>
-                        Después de sacar el elemento:
-                        {{ estructura.datos }}
-                        <br>
-                        Último elemento sacado de la pila: <span class="highlight">{{ estructura.ultimo }}</span>
-                    {% elif estructura.tipo == "Colas" %}
-                        Todos los clientes en la cola:
-                        {{ estructura.datos }}
-                        <br>
-                        Ya pasó el primer cliente:
-                        {{ estructura.datos }}
-                        <br>
-                        Primer cliente fuera de la cola es: <span class="highlight">{{ estructura.primero }}</span>
-                    {% else %}
-                        {{ estructura.datos }}
-                    {% endif %}
-                </pre>
-            </div>
-        {% endfor %}
+        <h2>Lista</h2>
+        <ul>
+            {% for item in estructura_compuesta[0]["datos"] %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        <form action="/agregar_lista" method="post">
+            <input type="text" name="item" required>
+            <button type="submit">Agregar a Lista</button>
+        </form>
+
+        <h2>Pila</h2>
+        <ul>
+            {% for item in estructura_compuesta[1]["datos"] %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        <form action="/agregar_pila" method="post">
+            <input type="text" name="item" required>
+            <button type="submit">Apilar</button>
+        </form>
+        <form action="/eliminar_pila" method="post">
+            <button type="submit">Desapilar</button>
+        </form>
+
+        <h2>Árbol Binario (Preorden)</h2>
+        <ul>
+            {% for item in estructura_compuesta[2]["datos"] %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+
+        <h2>Cola</h2>
+        <ul>
+            {% for item in estructura_compuesta[3]["datos"] %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        <form action="/agregar_cola" method="post">
+            <input type="text" name="item" required>
+            <button type="submit">Encolar</button>
+        </form>
+        <form action="/eliminar_cola" method="post">
+            <button type="submit">Desencolar</button>
+        </form>
     </div>
 </body>
 </html>
