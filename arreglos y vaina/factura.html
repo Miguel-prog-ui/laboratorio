@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 20%;
+        }
+        table {
+            margin: auto;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+        }
+        .boton {
+            text-decoration: none;
+            color: #333;
+            display: block;
+            padding: 10px;
+            margin: 10px auto;
+            background-color: #ddd;
+            border: none;
+            border-radius: 5px;
+            width: 200px;
+            cursor: pointer;
+        }
+        .boton:hover {
+            background-color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <h2>Factura</h2>
+    <table>
+        <tr>
+            <th>Producto</th>
+            <th>Precio (USD)</th>
+        </tr>
+        {% for item, precio in detalles %}
+        <tr>
+            <td>{{ item }}</td>
+            <td>{{ precio }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <th>Total</th>
+            <th>{{ total }}</th>
+        </tr>
+    </table>
+    <a class="boton" href="/">Volver al Inicio</a>
+</body>
+</html>
