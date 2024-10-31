@@ -22,12 +22,11 @@
             color: #333;
             display: block;
             padding: 8px;
-            margin: 5px auto;
+            margin: 5px 0;
             background-color: #ddd;
             border: none;
             border-radius: 3px;
             cursor: pointer;
-            width: 200px;
         }
         .menu button:hover {
             background-color: #bbb;
@@ -36,13 +35,14 @@
 </head>
 <body>
     <div class="menu">
-        <h2>Opciones Disponibles</h2>
+        <h2>Menú de Opciones</h2>
         <form action="/seleccion" method="post">
-            <button type="submit" name="opcion" value="Pizza">Pizza</button>
-            <button type="submit" name="opcion" value="Hamburguesa">Hamburguesa</button>
-            <button type="submit" name="opcion" value="Ensalada">Ensalada</button>
-            <button type="submit" name="opcion" value="Sushi">Sushi</button>
+            <button type="submit" name="opcion" value="Pizza">Pizza ({{ existencias['Pizza'] }} disponibles)</button>
+            <button type="submit" name="opcion" value="Hamburguesa">Hamburguesa ({{ existencias['Hamburguesa'] }} disponibles)</button>
+            <button type="submit" name="opcion" value="Ensalada">Ensalada ({{ existencias['Ensalada'] }} disponibles)</button>
+            <button type="submit" name="opcion" value="Sushi">Sushi ({{ existencias['Sushi'] }} disponibles)</button>
         </form>
     </div>
 </body>
 </html>
+
