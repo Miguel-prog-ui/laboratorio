@@ -8,41 +8,35 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin-top: 10%;
+            margin-top: 20%;
         }
         .boton {
             text-decoration: none;
             color: #333;
             display: block;
-            padding: 8px;
-            margin: 5px auto;
+            padding: 10px;
+            margin: 10px auto;
             background-color: #ddd;
             border: none;
-            border-radius: 3px;
-            cursor: pointer;
+            border-radius: 5px;
             width: 200px;
+            cursor: pointer;
         }
         .boton:hover {
             background-color: #bbb;
-        }
-        .existencias {
-            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <h2>{{ mensaje }}</h2>
-    <div class="existencias">
-        <p>Pizza: {{ existencias['Pizza'] }} disponibles</p>
-        <p>Hamburguesa: {{ existencias['Hamburguesa'] }} disponibles</p>
-        <p>Ensalada: {{ existencias['Ensalada'] }} disponibles</p>
-        <p>Sushi: {{ existencias['Sushi'] }} disponibles</p>
-    </div>
     <form action="/continuar" method="post">
-        <button class="boton" type="submit">Desea seleccionar otro producto</button>
+        <button class="boton" type="submit">Seleccionar otra cosa</button>
     </form>
-    <form action="/" method="get">
-        <button class="boton" type="submit">Retornar al Inicio</button>
+    <form action="/factura" method="get">
+        <button class="boton" type="submit">Ver Factura</button>
+    </form>
+    <form action="/cancelar" method="post">
+        <button class="boton" type="submit">Cancelar Pedido</button>
     </form>
 </body>
 </html>
