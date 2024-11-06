@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adquirir Deuda</title>
+</head>
+<body>
+
+    <h2>{{ mensaje }}</h2>
+    <h2>¿Desea adquirir la deuda?</h2>
+    <form action="/adquirir_deuda" method="post">
+        <input type="hidden" name="monto" value="{{ monto }}">
+        <button type="submit" name="decision_deuda" value="si">Sí</button>
+        <button type="submit" name="decision_deuda" value="no">No</button>
+    </form>
+</body>
+</html>
