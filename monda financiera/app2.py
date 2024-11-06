@@ -74,7 +74,7 @@ def monto_aumento_capital():
         monto_deseado = int(monto_deseado)
         if monto_deseado > 5000:
             mensaje = "El monto deseado excede los $5000. ¿Desea ingresar otro monto o salir?"
-            return render_template('excedido.html', mensaje=mensaje)
+            return render_template('excedido1.html', mensaje=mensaje)
         else:
             return render_template('porcentaje_aumento_capital.html', monto=monto_deseado)
     else:
@@ -113,7 +113,15 @@ def resultado_propuesta():
 def excedido():
     decision_excedido = request.form['decision_excedido']
     if decision_excedido == 'ingresar_otro_monto':
-        return render_template('monto_aumento_capital.html')
+        return render_template('credito_bancario.html')  # Corregido para redirigir correctamente a crédito bancario
+    else:
+        return render_template('bienvenida1.html')
+
+@app.route('/excedido1', methods=['POST'])
+def excedido1():
+    decision_excedido = request.form['decision_excedido']
+    if decision_excedido == 'ingresar_otro_monto':
+        return render_template('monto_aumento_capital.html')  # Corregido para redirigir correctamente a aumento de capital
     else:
         return render_template('bienvenida1.html')
 
