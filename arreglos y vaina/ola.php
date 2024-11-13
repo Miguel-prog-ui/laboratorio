@@ -112,7 +112,7 @@
         print_r($cola);
         echo "<br>Primer cliente fuera de la cola es: <span class='highlight'>" . $cliente . "</span>";
         echo "</pre></div>";
-    ?>
+        ?>
         
         <h2>Listas</h2>
         <?php
