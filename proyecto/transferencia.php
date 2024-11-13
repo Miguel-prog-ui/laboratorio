@@ -18,34 +18,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $row = $result->fetch_assoc();
         $saldo = $row['saldo'];
         if (password_verify($contraseña, $row['contraseña'])) {
-            // Verificar que el destinatario existe y que el correo coincide
-            $sql = "SELECT saldo FROM usuarios WHERE nombreusuario = '$destinatario' AND mail = '$correo'";
-            $result = $conn->query($sql);
-            if ($result->num_rows > 0) {
-                // Realizar la transferencia
-                $conn->begin_transaction();
-                try {
-                    // Restar el saldo del usuario que realiza la transferencia
-                    $sql = "UPDATE usuarios SET saldo = saldo - $monto WHERE nombreusuario = '$nombreusuario'";
-                    if ($conn->query($sql) !== TRUE) {
-                        throw new Exception("Error al restar saldo: " . $conn->error);
-                    }
+            if ($saldo >= $monto) { // Verificar si el saldo es suficiente
+                // Verificar que el destinatario existe y que el correo coincide
+                $sql = "SELECT saldo FROM usuarios WHERE nombreusuario = '$destinatario' AND mail = '$correo'";
+                $result = $conn->query($sql);
+                if ($result->num_rows > 0) {
+                    // Realizar la transferencia
+                    $conn->begin_transaction();
+                    try {
+                        // Restar el saldo del usuario que realiza la transferencia
+                        $sql = "UPDATE usuarios SET saldo = saldo - $monto WHERE nombreusuario = '$nombreusuario'";
+                        if ($conn->query($sql) !== TRUE) {
+                            throw new Exception("Error al restar saldo: " . $conn->error);
+                        }
 
-                    // Sumar el saldo al destinatario
-                    $sql = "UPDATE usuarios SET saldo = saldo + $monto WHERE nombreusuario = '$destinatario'";
-                    if ($conn->query($sql) !== TRUE) {
-                        throw new Exception("Error al sumar saldo: " . $conn->error);
-                    }
+                        // Sumar el saldo al destinatario
+                        $sql = "UPDATE usuarios SET saldo = saldo + $monto WHERE nombreusuario = '$destinatario'";
+                        if ($conn->query($sql) !== TRUE) {
+                            throw new Exception("Error al sumar saldo: " . $conn->error);
+                        }
 
-                    // Confirmar transacción
-                    $conn->commit();
-                    $message = "<h2 style='color: green;'>Transferencia realizada con éxito. Saldo actualizado.</h2>";
-                } catch (Exception $e) {
-                    $conn->rollback();
-                    $message = "<h2 style='color: red;'>Error durante la transferencia: " . $e->getMessage() . "</h2>";
+                        // Confirmar transacción
+                        $conn->commit();
+                        $message = "<h2 style='color: green;'>Transferencia realizada con éxito. Saldo actualizado.</h2>";
+                    } catch (Exception $e) {
+                        $conn->rollback();
+                        $message = "<h2 style='color: red;'>Error durante la transferencia: " . $e->getMessage() . "</h2>";
+                    }
+                } else {
+                    $message = "<h2 style='color: red;'>Destinatario no encontrado o correo incorrecto.</h2>";
                 }
             } else {
-                $message = "<h2 style='color: red;'>Destinatario no encontrado o correo incorrecto.</h2>";
+                $message = "<h2 style='color: red;'>Saldo insuficiente para realizar la transferencia.</h2>";
             }
         } else {
             $message = "<h2 style='color: red;'>Contraseña incorrecta.</h2>";

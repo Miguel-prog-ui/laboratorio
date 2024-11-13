@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido al Banco Prestigioso</title>
+    <style>
+        /* Estilo general del cuerpo */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('images/fondo.png') no-repeat center center fixed; /* Imagen de fondo */
+            background-size: cover; /* Escala la imagen para cubrir toda el área */
+            color: rgb(0, 0, 0); /* Color del texto */
+            margin: 0; /* Sin márgenes */
+            padding: 0; /* Sin relleno */
+            display: flex; /* Usar Flexbox para centrar contenido */
+            justify-content: center; /* Centrar horizontalmente */
+            align-items: center; /* Centrar verticalmente */
+            height: 100vh; /* Altura de la pantalla completa */
+            overflow: hidden; /* Ocultar desbordamiento */
+            position: relative; /* Posicionamiento relativo para contenido absoluto */
+        }
+        /* Contenedor principal */
+        .container {
+            background: rgba(255, 255, 255, 0.1); /* Fondo translúcido */
+            padding: 50px;
+            border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Sombra */
+            text-align: center; /* Centrar texto */
+            backdrop-filter: blur(10px); /* Desenfoque de fondo */
+            max-width: 800px;
+            z-index: 1; /* Colocar encima de otros elementos */
+        }
+        /* Título */
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        /* Párrafos y elementos de lista */
+        p, li {
+            font-size: 1.2em;
+            line-height: 1.6; /* Altura de línea */
+        }
+        ul {
+            list-style: none; /* Sin viñetas */
+            padding: 0;
+        }
+        ul li::before {
+            content: "✓"; /* Icono de verificación */
+            color: #00ff00; /* Color verde */
+            font-weight: bold;
+            margin-right: 10px; /* Espacio después del icono */
+        }
+        /* Contenedor de botones */
+        .button-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center; /* Centrar horizontalmente */
+        }
+        /* Estilos de enlaces */
+        .link {
+            color: #007bff; /* Color del enlace */
+            text-decoration: none; /* Sin subrayado */
+            font-size: 1.2em;
+            transition: color 0.3s, transform 0.3s; /* Transición de color y escala */
+        }
+        .link:hover {
+            color: #0056b3; /* Color del enlace al pasar el ratón */
+            transform: scale(1.05); /* Aumentar ligeramente el tamaño */
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor principal -->
+    <div class="container">
+        <h1>Bienvenido al Banco Prestigioso</h1>
+        <p>En nuestro banco, ofrecemos una variedad de servicios diseñados para satisfacer todas tus necesidades financieras. Antes de iniciar sesión o crear una cuenta, descubre lo que podemos hacer por ti:</p>
+        <ul>
+            <li><strong>Gestión de Cuentas:</strong> Abre y administra tus cuentas corrientes y de ahorro con facilidad.</li>
+            <li><strong>Préstamos Personales:</strong> Obtén préstamos con tasas competitivas y plazos flexibles.</li>
+            <li><strong>Tarjetas de Crédito:</strong> Accede a una variedad de tarjetas de crédito con recompensas y beneficios exclusivos.</li>
+            <li><strong>Inversiones:</strong> Explora nuestras opciones de inversión y planifica tu futuro financiero.</li>
+            <li><strong>Servicios de Banca en Línea:</strong> Realiza transacciones y administra tus cuentas de manera segura desde cualquier lugar.</li>
+        </ul>
+        <div class="button-container">
+            <a href="monda.html" class="link">¡Empezar!</a> <!-- Enlace para empezar -->
+        </div>
+    </div>
+</body>
+</html>

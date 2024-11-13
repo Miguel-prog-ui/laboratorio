@@ -74,7 +74,7 @@
         <a href="saldo.php">Consultar Saldo</a>
         <a href="deposito.php">Depósito</a>
         <a href="transferencia.php">Transferencia</a>
-        <a href="#">Opción 4</a>
+        <a href="pagos_servicios.php">Pagos de servicios</a>
         <a href="monda.html">Cerrar sesión</a>
     </div>
     <div class="container">
