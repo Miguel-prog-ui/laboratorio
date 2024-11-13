@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estructuras de Datos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #000;
+        }
+        ul, table {
+            list-style-type: none;
+            padding: 0;
+            margin: auto;
+            text-align: center;
+            border-collapse: collapse;
+        }
+        ul li, th, td {
+            background-color: #e9ecef;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid black;
+        }
+        form {
+            text-align: center;
+            margin-top: 10px;
+        }
+        input[type="text"] {
+            padding: 5px;
+            font-size: 1em;
+        }
+        button {
+            padding: 5px 10px;
+            font-size: 1em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Estructuras de Datos</h1>
+
+        <h2>Lista</h2>
+        <ul>
+            {% for item in estructura_compuesta[0]["datos"] %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        <form action="/agregar_lista" method="post">
+            <input type="text" name="item" required>
+            <button type="submit">Agregar a Lista</button>
+        </form>
+
+        <h2>Pila</h2>
+        <ul>
+            {% for item in estructura_compuesta[1]["datos"] %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        <form action="/agregar_pila" method="post">
+            <input type="text" name="item" required>
+            <button type="submit">Apilar</button>
+        </form>
+        <form action="/eliminar_pila" method="post">
+            <button type="submit">Desapilar</button>
+        </form>
+
+        <h2>Árbol Binario (Preorden)</h2>
+        <ul>
+            {% for item in estructura_compuesta[2]["datos"] %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+
+        <h2>Cola</h2>
+        <ul>
+            {% for item in estructura_compuesta[3]["datos"] %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        <form action="/agregar_cola" method="post">
+            <input type="text" name="item" required>
+            <button type="submit">Encolar</button>
+        </form>
+        <form action="/eliminar_cola" method="post">
+            <button type="submit">Desencolar</button>
+        </form>
+    </div>
+</body>
+</html>
