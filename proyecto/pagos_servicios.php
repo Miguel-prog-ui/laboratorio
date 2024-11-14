@@ -102,6 +102,13 @@
     </div>
     <div class="container">
         <h2>Realiza tu Pago de Servicios</h2>
+        <?php
+        if (isset($_GET['message'])) {
+            $message = $_GET['message'];
+            $message_type = $_GET['message_type'];
+            echo "<div class='message {$message_type}'>{$message}</div>";
+        }
+        ?>
         <select onchange="showForm(this.value)">
             <option value="">Selecciona un servicio</option>
             <option value="luz">Luz</option>
@@ -118,7 +125,7 @@
             </div>
             <div class="form-group">
                 <label for="monto_luz">Monto:</label>
-                <input type="number" id="monto_luz" name="monto_luz" required>
+                <input type="number" name="monto_pago" id="monto_pago" required>
             </div>
             <button type="submit">Pagar Luz</button>
         </form>
@@ -130,7 +137,8 @@
             </div>
             <div class="form-group">
                 <label for="monto_agua">Monto:</label>
-                <input type="number" id="monto_agua" name="monto_agua" required>
+                <input type="number" name="monto_pago" id="monto_pago" required>
+
             </div>
             <button type="submit">Pagar Agua</button>
         </form>
@@ -142,7 +150,8 @@
             </div>
             <div class="form-group">
                 <label for="monto_recarga">Monto:</label>
-                <input type="number" id="monto_recarga" name="monto_recarga" required>
+                <input type="number" name="monto_pago" id="monto_pago" required>
+
             </div>
             <button type="submit">Recargar Teléfono</button>
         </form>
@@ -154,7 +163,8 @@
             </div>
             <div class="form-group">
                 <label for="monto_cable">Monto:</label>
-                <input type="number" id="monto_cable" name="monto_cable" required>
+                <input type="number" name="monto_pago" id="monto_pago" required>
+
             </div>
             <button type="submit">Pagar Cable</button>
         </form>
@@ -166,7 +176,8 @@
             </div>
             <div class="form-group">
                 <label for="monto_internet">Monto:</label>
-                <input type="number" id="monto_internet" name="monto_internet" required>
+                <input type="number" name="monto_pago" id="monto_pago" required>
+
             </div>
             <button type="submit">Pagar Internet</button>
         </form>

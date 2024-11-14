@@ -1,49 +1,47 @@
-<?php include 'db_connect.php'; // Conectar a la base de datos ?>
 <?php
 session_start();
-
-// Obtener el nombre de usuario de la sesión
-$nombreusuario = $_SESSION['nombreusuario'];
+include 'db_connect.php'; // Conexión a tu base de datos
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Obtener datos del formulario
-    $servicio = $_POST['servicio'];
-    $monto = $_POST['monto'];
-    
-    // Dependiendo del servicio, obtener los datos específicos
-    $domicilio = isset($_POST['domicilio']) ? $_POST['domicilio'] : null;
-    $numero_telefono = isset($_POST['numero_telefono']) ? $_POST['numero_telefono'] : null;
-    $codigo_aparato = isset($_POST['codigo_aparato']) ? $_POST['codigo_aparato'] : null;
-    $cedula_titular = isset($_POST['cedula_titular']) ? $_POST['cedula_titular'] : null;
-
-    // Verificar el saldo del usuario
-    $query_saldo = "SELECT saldo FROM usuarios WHERE nombreusuario = '$nombreusuario'";
-    $result_saldo = mysqli_query($conn, $query_saldo);
-    if ($result_saldo && mysqli_num_rows($result_saldo) > 0) {
-        $row = mysqli_fetch_assoc($result_saldo);
-        $saldo_actual = $row['saldo'];
-        
-        if ($saldo_actual >= $monto) {
-            // Realizar la transacción
-            $nuevo_saldo = $saldo_actual - $monto;
-            $query_actualizar_saldo = "UPDATE usuarios SET saldo = '$nuevo_saldo' WHERE nombreusuario = '$nombreusuario'";
-            if (mysqli_query($conn, $query_actualizar_saldo)) {
-                // Registrar el pago
-                $query_registrar_pago = "INSERT INTO pagos (nombreusuario, servicio, monto, domicilio, numero_telefono, codigo_aparato, cedula_titular) 
-                                        VALUES ('$nombreusuario', '$servicio', '$monto', '$domicilio', '$numero_telefono', '$codigo_aparato', '$cedula_titular')";
-                if (mysqli_query($conn, $query_registrar_pago)) {
-                    echo "Pago realizado con éxito.";
-                } else {
-                    echo "Error al registrar el pago.";
-                }
-            } else {
-                echo "Error al actualizar el saldo.";
-            }
-        } else {
-            echo "Saldo insuficiente.";
-        }
-    } else {
-        echo "Error al obtener el saldo del usuario.";
+    // Verifica que el nombre de usuario y el monto del pago estén establecidos
+    if (!isset($_SESSION['nombreusuario']) || !isset($_POST['monto_pago'])) {
+        header("Location: pagos_servicios.php?message=Error: Datos no definidos.&message_type=error");
+        exit();
     }
+
+    $nombreusuario = $_SESSION['nombreusuario']; // Obtener el nombre de usuario de la sesión
+    $monto_pago = $_POST['monto_pago']; // El monto a pagar enviado desde el formulario
+
+    // Consulta el saldo actual del usuario
+    $query = "SELECT saldo FROM usuarios WHERE nombreusuario = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $nombreusuario);
+    $stmt->execute();
+    $stmt->bind_result($saldo);
+    $stmt->fetch();
+    $stmt->close();
+
+    if ($saldo < $monto_pago) {
+        // Redirige con mensaje de error si el saldo es insuficiente
+        header("Location: pagos_servicios.php?message=Saldo insuficiente. Por favor, recargue su cuenta.&message_type=error");
+    } else {
+        // Calcula el nuevo saldo
+        $nuevo_saldo = $saldo - $monto_pago;
+
+        // Actualiza el saldo en la base de datos
+        $update_query = "UPDATE usuarios SET saldo = ? WHERE nombreusuario = ?";
+        $stmt = $conn->prepare($update_query);
+        $stmt->bind_param("ds", $nuevo_saldo, $nombreusuario);
+        if ($stmt->execute()) {
+            // Redirige con mensaje de éxito si el pago se realizó correctamente
+            header("Location: pagos_servicios.php?message=Pago realizado con éxito. &message_type=success");
+        } else {
+            // Redirige con mensaje de error si hubo un problema al actualizar el saldo
+            header("Location: pagos_servicios.php?message=Hubo un error al procesar su pago. Por favor, intente de nuevo.&message_type=error");
+        }
+        $stmt->close();
+    }
+
+    $conn->close();
 }
 ?>
