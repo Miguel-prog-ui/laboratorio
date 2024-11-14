@@ -21,17 +21,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nombreusuario = $_POST['nombreusuario'];
     $contraseña = password_hash($_POST['contraseña'], PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO usuarios (nombre, apellido, num_tlfn, mail, nombreusuario, contraseña) 
-            VALUES ('$nombre', '$apellido', '$num_tlfn', '$mail', '$nombreusuario', '$contraseña')";
+    // Verificar si el correo, número de teléfono o nombre de usuario ya existe
+    $check_sql = "SELECT * FROM usuarios WHERE mail = ? OR num_tlfn = ? OR nombreusuario = ?";
+    $stmt = $conn->prepare($check_sql);
+    $stmt->bind_param("sss", $mail, $num_tlfn, $nombreusuario);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if ($conn->query($sql) === TRUE) {
-        $mensaje = "Registro exitoso.";
+    if ($result->num_rows > 0) {
+        $mensaje = "Error: El correo, teléfono o nombre de usuario ya está en uso.";
     } else {
-        $mensaje = "Error: " . $sql . "<br>" . $conn->error;
+        // Proceder con la inserción del nuevo usuario
+        $insert_sql = "INSERT INTO usuarios (nombre, apellido, num_tlfn, mail, nombreusuario, contraseña) 
+                       VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($insert_sql);
+        $stmt->bind_param("ssssss", $nombre, $apellido, $num_tlfn, $mail, $nombreusuario, $contraseña);
+
+        if ($stmt->execute()) {
+            $mensaje = "Registro exitoso.";
+        } else {
+            $mensaje = "Error: " . $stmt->error;
+        }
     }
+
+    $stmt->close();
     header("Location: resultado.php?mensaje=" . urlencode($mensaje));
     exit();
 }
 
 $conn->close();
 ?>
+s

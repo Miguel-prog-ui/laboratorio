@@ -20,8 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $contraseña = isset($_POST['contraseña']) ? $_POST['contraseña'] : '';
 
     if (!empty($nombreusuario) && !empty($contraseña)) {
-        $sql = "SELECT contraseña FROM usuarios WHERE nombreusuario='$nombreusuario'";
-        $result = $conn->query($sql);
+        $sql = "SELECT contraseña FROM usuarios WHERE nombreusuario=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $nombreusuario);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
         if ($result) {
             if ($result->num_rows > 0) {
@@ -33,19 +36,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     header("Location: menu.php");
                     exit();
                 } else {
-                    echo "<h2 style='text-align: center;'>La contraseña es incorrecta</h2>";
-                    echo "<p style='text-align: center;'><a href='monda.html'>Volver a intentar</a></p>";
-                } 
+                    $mensaje = "La contraseña es incorrecta.";
+                }
             } else {
-                echo "<h2 style='text-align: center;'>El usuario no existe</h2>";
-                echo "<p style='text-align: center;'><a href='monda.html'>Volver a intentar</a></p>";
+                $mensaje = "El usuario no existe.";
             }
         } else {
-            echo "Error en la consulta: " . $conn->error;
+            $mensaje = "Error en la consulta: " . $conn->error;
         }
     } else {
-        echo "<h2 style='text-align: center;'>Faltan datos de usuario o contraseña.</h2>";
+        $mensaje = "Faltan datos de usuario o contraseña.";
     }
+
+    header("Location: resultado2.php?mensaje=" . urlencode($mensaje));
+    exit();
 }
 
 $conn->close();
