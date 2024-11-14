@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $correo = $_POST['correo'];
     $monto = $_POST['monto'];
     $contraseña = $_POST['contraseña'];
+    $concepto = $_POST['concepto']; // Nuevo campo para concepto
 
     // Verificar la contraseña del usuario que realiza la transferencia
     $sql = "SELECT contraseña, saldo FROM usuarios WHERE nombreusuario = '$nombreusuario'";
@@ -36,6 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $sql = "UPDATE usuarios SET saldo = saldo + $monto WHERE nombreusuario = '$destinatario'";
                         if ($conn->query($sql) !== TRUE) {
                             throw new Exception("Error al sumar saldo: " . $conn->error);
+                        }
+
+                        // Insertar en historial
+                        $fechaHora = date('Y-m-d H:i:s'); // Obtener la fecha y hora actual
+                        $sql = "INSERT INTO historial (monto, concepto, fecha_hora, usuario_destino, usuario_origen) VALUES ('$monto', '$concepto', '$fechaHora', '$destinatario', '$nombreusuario')";
+                        if ($conn->query($sql) !== TRUE) {
+                            throw new Exception("Error al insertar en historial: " . $conn->error);
                         }
 
                         // Confirmar transacción
@@ -130,6 +138,7 @@ $conn->close();
         .form-container input[type="email"],
         .form-container input[type="number"],
         .form-container input[type="password"],
+        .form-container input[type="text"],
         .form-container button {
             width: calc(100% - 30px); /* Reduce el ancho del campo */
             margin: 10px 10px; /* Márgenes más pequeños */
@@ -158,8 +167,8 @@ $conn->close();
         <a href="saldo.php">Consultar Saldo</a>
         <a href="deposito.php">Depósito</a>
         <a href="transferencia.php">Transferencia</a>
-        <a href="#">Opción 4</a>
-        <a href="monda.php">Cerrar sesión</a>
+        <a href="pagos_servicios.php">Pagos de Servicios</a>
+        <a href="monda.html">Cerrar sesión</a>
     </div>
     <div class="container">
         <div class="form-container">
@@ -170,6 +179,7 @@ $conn->close();
                 <input type="email" name="correo" placeholder="Correo del destinatario" required>
                 <input type="number" name="monto" placeholder="Monto a transferir" required>
                 <input type="password" name="contraseña" placeholder="Contraseña" required>
+                <input type="text" name="concepto" placeholder="Concepto de la transferencia" required> <!-- Nuevo campo -->
                 <button type="submit">Transferir</button>
             </form>
         </div>

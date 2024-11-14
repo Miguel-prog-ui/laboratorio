@@ -93,7 +93,7 @@
         <span>PAGOS DE SERVICIOS</span>
     </div>
     <div class="navbar">
-        <a href="#">Inicio</a>
+        <a href="menu.php">Inicio</a>
         <a href="saldo.php">Consultar Saldo</a>
         <a href="deposito.php">Depósito</a>
         <a href="transferencia.php">Transferencia</a>
