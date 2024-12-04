@@ -47,7 +47,7 @@
     <div class="container">
         <h1>Resultado del Registro</h1>
         <p><?php echo htmlspecialchars($_GET['mensaje']); ?></p>
-        <a href='monda.html' class='btn'>Volver a la página de inicio de sesión</a>
+        <a href='monda.html' class='btn'>volver al apartado de inicio de sesion o crear cuenta</a>
     </div>
 </body>
 </html>

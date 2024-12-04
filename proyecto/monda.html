@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Inicio de Sesión</title>
+    <title>Bienvenido a NeoBanca</title>
     <style>
         body {
             display: flex;
@@ -49,16 +49,16 @@
         button:hover {
             background-color: #5AAEAA;
         }
-        .register-link {
+        .register-link, .login-link {
             margin-top: 20px;
             font-size: 14px;
         }
-        .register-link a {
+        .register-link a, .login-link a {
             color: #76C7C0;
             text-decoration: none;
             cursor: pointer;
         }
-        .register-link a:hover {
+        .register-link a:hover, .login-link a:hover {
             text-decoration: underline;
         }
         .hidden {
@@ -66,24 +66,35 @@
         }
     </style>
     <script>
-        function showRegisterForm() {
-            document.getElementById('loginForm').classList.add('hidden');
+        function showLogin() {
+            document.getElementById('welcome').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+        }
+
+        function showRegister() {
+            document.getElementById('welcome').classList.add('hidden');
             document.getElementById('registerForm').classList.remove('hidden');
+            document.getElementById('loginForm').classList.add('hidden');
         }
     </script>
 </head>
 <body>
-    <div class="container" id="loginForm">
+    <div class="container" id="welcome">
+        <h2>Bienvenido a NeoBanca</h2>
+        <button onclick="showLogin()">Iniciar Sesión</button>
+        <button onclick="showRegister()">Crear Cuenta</button>
+    </div>
+
+    <div class="container hidden" id="loginForm">
         <h2>Iniciar Sesión</h2>
         <form method="POST" action="login.php">
             <input type="text" name="nombreusuario" placeholder="Nombre de Usuario" required>
             <input type="password" name="contraseña" placeholder="Contraseña" required>
             <button type="submit">Iniciar Sesión</button>
         </form>
-        <div class="register-link">
-            <p>¿No tienes cuenta? <a onclick="showRegisterForm()">Crear una</a></p>
-        </div>
-    </div> 
+        
+    </div>
 
     <div class="container hidden" id="registerForm">
         <h2>Crear Cuenta</h2>
@@ -96,6 +107,7 @@
             <input type="password" name="contraseña" placeholder="Contraseña" required>
             <button type="submit">Registrar</button>
         </form>
+        
     </div>
 </body>
 </html>

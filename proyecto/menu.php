@@ -80,7 +80,7 @@
     <div class="container">
         <div class="welcome">
             <h2>Bienvenido al Menú Principal</h2>
-            <p>Estamos encantados de verte de nuevo. Aquí puedes explorar diferentes opciones para encontrar exactamente lo que necesitas. <span class="highlight">¡Disfruta de tu experiencia!</span></p>
+            <p>Estamos encantados de verte de nuevo. Aquí puedes explorar diferentes opciones para encontrar exactamente lo que necesitas. <span class="highlight">¡Disfruta de tu experiencia! ¿Qué quiere hacer?</span></p>
         </div>
     </div>
 </body>

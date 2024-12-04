@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información de Persona</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .persona-info {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        .persona-info h2 {
+            text-align: center;
+            color: #333;
+        }
+        .persona-info p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="persona-info">
+        <h2>Información de Persona</h2>
+        <?php
+        include 'persona.php';
+        for ($i = 0; $i < count($clave); $i++) {
+            echo "<p><strong>{$clave[$i]}:</strong> {$valor[$i]}</p>";
+        }
+        ?>
+    </div>
+</body>
+</html>
