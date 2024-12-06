@@ -1,24 +1,19 @@
-<? session_start(); ?>
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú</title>
+    <title>Dashboard Bancario</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='menu.css') }}">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
-    
 </head>
 <body>
     <div class="header-bar">
         <div class="left-text">
             <i class='bx bx-user-circle'></i> {{usuario}}
         </div>
-        <span>BIENVENIDO A NUESTRO BANCO</span>
+        <span>BIENVENIDO A NEO BANCO</span>
     </div>
-    
-    
     <div class="navbar">
         <a href="/admin">Inicio</a>
         <a href="/saldo">Consultar Saldo</a>
@@ -28,10 +23,90 @@
         <a href="/">Cerrar sesión</a>
     </div>
     <div class="container">
-        <div class="welcome">
-            <h2>Bienvenido al Menú Principal</h2>
-            <p>Estamos encantados de verte de nuevo. Aquí puedes explorar diferentes opciones para encontrar exactamente lo que necesitas. <span class="highlight">¡Disfruta de tu experiencia!</span></p>
+        <div class="dashboard">
+            <div class="balance-section">
+                <h2>Resumen del Saldo</h2>
+                <div class="balance">
+                    <span>Cuenta Corriente:</span> <span class="saldo">{{ saldo }}$</span>
+                </div>
+            </div>
+
+            <div class="quick-links-section">
+                <h2>Accesos Rápidos</h2>
+                <div class="quick-links">
+                    <a href="/transferencia" class="link-box"><i class='bx bx-transfer'></i> Transferencia</a>
+                    <a href="/deposito" class="link-box"><i class='bx bx-money'></i> Depósito</a>
+                    <a href="/pagos_servicios" class="link-box"><i class='bx bx-receipt'></i> Pago de Servicios</a>
+                </div>
+            </div>
+
+            <div class="notifications-section">
+                <h2>Notificaciones</h2>
+                <ul class="notifications">
+                    {% for notificacion in notificaciones %}
+                    <li>{{ notificacion.mensaje }}</li>
+                    {% endfor %}
+                </ul>
+                <button id="show-all-notifications" class="link-box">Ver todas las notificaciones</button>
+            </div>
+
+            <div class="transactions-section">
+                <h2>Últimas Transacciones</h2>
+                <table class="transactions">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Descripción</th>
+                            <th>Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaccion in transacciones %}
+                        <tr>
+                            <td>{{ transaccion.fecha }}</td>
+                            <td>{{ transaccion.tipo }} "{{ transaccion.descripcion }}"</td>
+                            <td>{{ transaccion.monto }}$</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+
+    <div id="notifications-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Todas las Notificaciones</h2>
+            <ul class="notifications-all">
+                {% for notificacion in notificaciones %}
+                <li>{{ notificacion.mensaje }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById("notifications-modal");
+            const btn = document.getElementById("show-all-notifications");
+            const span = document.getElementsByClassName("close")[0];
+
+            btn.onclick = function() {
+                modal.style.display = "block";
+            }
+
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        });
+    </script>
+
 </body>
 </html>

@@ -82,10 +82,41 @@ def crear_cuenta():
 def admin():
     if 'logueado' in session:
         usuario = session['usuario']
-        saldo = session['saldo']
-        return render_template('admin.html', usuario=usuario, saldo=saldo)
+        cur = mysql.connection.cursor()
+        
+        # Obtener el saldo del usuario
+        cur.execute('SELECT saldo FROM usuarios WHERE usuario = %s', (usuario,))
+        saldo = cur.fetchone()['saldo']
+        
+        # Obtener las transacciones y movimientos con detalle
+        cur.execute('''
+            SELECT 'Deposito' as tipo, deposito as monto, fecha, usuario as descripcion 
+            FROM depositos_aceptados WHERE usuario = %s
+            UNION ALL
+            SELECT 'Transferencia Recibida de ' as tipo, monto as monto, fecha, 
+                   CONCAT(remitente, ' (', concepto, ')') as descripcion 
+            FROM transferencias WHERE destinatario = %s
+            UNION ALL
+            SELECT 'Transferencia Enviada a ' as tipo, -monto as monto, fecha, 
+                   CONCAT(destinatario, ' (', concepto, ')') as descripcion 
+            FROM transferencias WHERE remitente = %s
+            ORDER BY fecha DESC
+            LIMIT 5
+        ''', (usuario, usuario, usuario))
+        transacciones = cur.fetchall()
+        
+        # Notificaciones (Ejemplo de notificaciones estáticas, puedes adaptar esto según tus necesidades)
+        notificaciones = [
+            {'mensaje': 'Pago de servicios programado para mañana.'},
+            {'mensaje': 'Nuevo depósito disponible.'},
+        ]
+        
+        return render_template('admin.html', usuario=usuario, saldo=saldo, transacciones=transacciones, notificaciones=notificaciones)
     else:
-        return redirect('/')
+        return redirect('/login')
+
+
+
 #funcion para el saldo---------------------------------------------------------------------------------------------------------    
 @app.route('/saldo')
 def saldo():
@@ -146,6 +177,7 @@ def transferencia():
             destinatario = request.form['txt_destinatario']
             correo_destinatario = request.form['txt_correo']
             monto_transferir = request.form['txt_monto']
+            concepto_transferencia = request.form['txt_concepto']
 
             cur = mysql.connection.cursor()
 
@@ -171,8 +203,8 @@ def transferencia():
                         mysql.connection.commit()
 
                         # Insertar los detalles de la transferencia en la base de datos
-                        cur.execute('INSERT INTO transferencias (remitente, destinatario, monto, fecha) VALUES (%s, %s, %s, NOW())', 
-                                    (usuario_remitente, destinatario, monto_transferir))
+                        cur.execute('INSERT INTO transferencias (remitente, destinatario, monto, concepto, fecha) VALUES (%s, %s, %s, %s, NOW())', 
+                                    (usuario_remitente, destinatario, monto_transferir,concepto_transferencia))
                         mysql.connection.commit()
 
                         # Actualización del saldo en la sesión
@@ -252,6 +284,10 @@ def rechazar_deposito():
         return redirect('/deposito_admin')
     else:
         return redirect('/login')
+
+@app.route('/pagos_servicios')
+def targeta_debito():
+    return render_template('/tarjeta.html')
 
 if __name__ == '__main__':
     app.secret_key = "miguel_hds"
