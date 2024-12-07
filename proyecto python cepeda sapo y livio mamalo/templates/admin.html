@@ -25,9 +25,17 @@
     <div class="container">
         <div class="dashboard">
             <div class="balance-section">
-                <h2>Resumen del Saldo</h2>
-                <div class="balance">
-                    <span>Cuenta Corriente:</span> <span class="saldo">{{ saldo }}$</span>
+                <div class="half-section balance-half">
+                    <h2>Cuenta Corriente</h2>
+                    <div class="balance">
+                        <span class="saldo">{{ saldo }}$</span>
+                    </div>
+                </div>
+                <div class="half-section debit-card-half">
+                    <h2>Tarjeta de Débito</h2>
+                    <div class="debit-card">
+                        <button id="debit-card-button" class="link-box"><i class='bx bx-credit-card'></i>Gestionar</button>
+                    </div>
                 </div>
             </div>
 
@@ -43,11 +51,11 @@
             <div class="notifications-section">
                 <h2>Notificaciones</h2>
                 <ul class="notifications">
-                    {% for notificacion in notificaciones %}
-                    <li>{{ notificacion.mensaje }}</li>
+                    {% for notificacion in ultimas_notificaciones %}
+                    <li>Su {{ notificacion.tipo }} ha sido {{ notificacion.notificacion }} el {{ notificacion.fecha }}</li>
                     {% endfor %}
                 </ul>
-                <button id="show-all-notifications" class="link-box">Ver todas las notificaciones</button>
+                <button id="show-all-notifications" class="link-box"><i class='bx bx-bell'></i>notificaciones</button>
             </div>
 
             <div class="transactions-section">
@@ -74,13 +82,54 @@
         </div>
     </div>
 
+    <div id="password-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Ingrese su Contraseña</h2>
+            <input type="password" id="password-input" class="password-input" placeholder="Contraseña">
+            <button id="password-submit" class="link-box">Enviar</button>
+        </div>
+    </div>
+
+    <div id="debit-card-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Información de la Tarjeta de Débito</h2>
+            <!-- Aquí se añadirá el contenido en el futuro -->
+            <div class="container_tarjeta">
+                <div class="card zinli">
+                    <div class="card-header">
+                        <span class="bank-name">Neo Banca</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-number-cvv">
+                            <div class="card-number">1234 5678 9123 4567</div>
+                            <div class="card-cvv">
+                                <span class="label">CVV</span>
+                                <span class="value">123</span>
+                            </div>
+                        </div>
+                        <div class="card-expiry">
+                            <span class="label">Válida hasta</span>
+                            <span class="value">12/26</span>
+                        </div>
+                        <div class="card-holder">
+                            <span class="label">Titular</span>
+                            <span class="value">{{usuario}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="notifications-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Todas las Notificaciones</h2>
             <ul class="notifications-all">
-                {% for notificacion in notificaciones %}
-                <li>{{ notificacion.mensaje }}</li>
+                {% for notificacion in todas_notificaciones %}
+                <li>Su {{ notificacion.tipo }} ha sido {{ notificacion.notificacion }} el {{ notificacion.fecha }}</li>
                 {% endfor %}
             </ul>
         </div>
@@ -88,25 +137,58 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById("notifications-modal");
-            const btn = document.getElementById("show-all-notifications");
-            const span = document.getElementsByClassName("close")[0];
-
-            btn.onclick = function() {
-                modal.style.display = "block";
+            const passwordModal = document.getElementById("password-modal");
+            const debitCardModal = document.getElementById("debit-card-modal");
+            const notificationsModal = document.getElementById("notifications-modal");
+            const debitCardButton = document.getElementById("debit-card-button");
+            const passwordSubmit = document.getElementById("password-submit");
+            const showAllNotifications = document.getElementById("show-all-notifications");
+            const closeButtons = document.querySelectorAll(".close");
+    
+            debitCardButton.onclick = function() {
+                passwordModal.style.display = "block";
             }
-
-            span.onclick = function() {
-                modal.style.display = "none";
+    
+            passwordSubmit.onclick = async function() {
+                const password = document.getElementById("password-input").value;
+    
+                // Enviar la contraseña al backend para validación
+                const response = await fetch('/validate_password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password: password })
+                });
+    
+                const result = await response.json();
+    
+                if (result.valid) {
+                    passwordModal.style.display = "none";
+                    debitCardModal.style.display = "block";
+                } else {
+                    alert("Contraseña incorrecta");
+                }
             }
-
+    
+            showAllNotifications.onclick = function() {
+                notificationsModal.style.display = "block";
+            }
+    
+            closeButtons.forEach(button => {
+                button.onclick = function() {
+                    button.parentElement.parentElement.style.display = "none";
+                }
+            });
+    
             window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
+                if (event.target == passwordModal || event.target == debitCardModal || event.target == notificationsModal) {
+                    event.target.style.display = "none";
                 }
             }
         });
     </script>
+    
 
 </body>
 </html>

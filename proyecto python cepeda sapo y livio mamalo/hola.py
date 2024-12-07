@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import render_template, redirect, request, Response, session
+from flask import render_template, redirect, request, Response, session,jsonify
 from flask_mysqldb import MySQL, MySQLdb
 
 app = Flask(__name__, template_folder='templates')
@@ -105,17 +105,43 @@ def admin():
         ''', (usuario, usuario, usuario))
         transacciones = cur.fetchall()
         
-        # Notificaciones (Ejemplo de notificaciones estáticas, puedes adaptar esto según tus necesidades)
-        notificaciones = [
-            {'mensaje': 'Pago de servicios programado para mañana.'},
-            {'mensaje': 'Nuevo depósito disponible.'},
-        ]
+        # Obtener las últimas tres notificaciones
+        cur.execute('''
+            SELECT usuario, tipo, notificacion, fecha
+            FROM notificaciones
+            WHERE usuario = %s
+            ORDER BY fecha DESC
+            LIMIT 4
+        ''', (usuario,))
+        ultimas_notificaciones = cur.fetchall()
         
-        return render_template('admin.html', usuario=usuario, saldo=saldo, transacciones=transacciones, notificaciones=notificaciones)
+        # Obtener todas las notificaciones
+        cur.execute('''
+            SELECT usuario, tipo, notificacion, fecha
+            FROM notificaciones
+            WHERE usuario = %s
+            ORDER BY fecha DESC
+        ''', (usuario,))
+        todas_notificaciones = cur.fetchall()
+        
+        return render_template('admin.html', usuario=usuario, saldo=saldo, transacciones=transacciones, ultimas_notificaciones=ultimas_notificaciones, todas_notificaciones=todas_notificaciones)
     else:
         return redirect('/login')
 
+@app.route('/validate_password', methods=['POST'])
+def validate_password():
+    data = request.get_json()
+    password = data.get('password')
+    usuario = session.get('usuario')  # Obtener el usuario de la sesión
 
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT password FROM usuarios WHERE usuario = %s', (usuario,))
+    stored_password = cur.fetchone()['password']
+
+    if password == stored_password:
+        return jsonify({"valid": True})
+    else:
+        return jsonify({"valid": False})
 
 #funcion para el saldo---------------------------------------------------------------------------------------------------------    
 @app.route('/saldo')
@@ -259,7 +285,11 @@ def aceptar_deposito():
             mysql.connection.commit()
             
             # Insertar el depósito en la tabla de depósitos aceptados
-            cur.execute('INSERT INTO depositos_aceptados (usuario, deposito, fecha) VALUES (%s, %s, %s)', (usuario, monto, fecha))
+            cur.execute('INSERT INTO depositos_aceptados (usuario, deposito, fecha) VALUES (%s, %s, %s, now())', (usuario, monto))
+            mysql.connection.commit()
+            
+            # Registrar la notificación de aceptación
+            cur.execute('INSERT INTO notificaciones (usuario, tipo, notificacion, fecha) VALUES (%s, %s, %s, now())', (usuario,'deposito', 'Aceptado', fecha))
             mysql.connection.commit()
             
             # Eliminar el depósito de la tabla de depósitos pendientes
@@ -270,20 +300,32 @@ def aceptar_deposito():
     else:
         return redirect('/login')
 
-
 @app.route('/rechazar_deposito', methods=["POST"])
 def rechazar_deposito():
     if 'logueado' in session:
         deposito_id = request.form['deposito_id']
         cur = mysql.connection.cursor()
         
-        # Eliminar el depósito de la tabla de depósitos pendientes
-        cur.execute('DELETE FROM depositos WHERE id = %s', (deposito_id,))
-        mysql.connection.commit()
+        # Obtener el depósito
+        cur.execute('SELECT * FROM depositos WHERE id = %s', (deposito_id,))
+        deposito = cur.fetchone()
+        
+        if deposito:
+            usuario = deposito['usuario']
+            fecha = deposito['fecha']  # Asumiendo que la columna fecha existe
+            
+            # Registrar la notificación de rechazo
+            cur.execute('INSERT INTO notificaciones (usuario, tipo, notificacion, fecha) VALUES (%s, %s, %s, now())', (usuario,'deposito', 'Rechazado'))
+            mysql.connection.commit()
+            
+            # Eliminar el depósito de la tabla de depósitos pendientes
+            cur.execute('DELETE FROM depositos WHERE id = %s', (deposito_id,))
+            mysql.connection.commit()
         
         return redirect('/deposito_admin')
     else:
         return redirect('/login')
+
 
 @app.route('/pagos_servicios')
 def targeta_debito():
