@@ -1,3 +1,11 @@
+#Codigo laboratorio de programacion parcial 3
+#fecha: 12/12/2024
+#programadores:Miguel Mijares, Livio Garcia, Jeam-pierre Hermosilla, Isaac Rengifo
+#version: 1.0.0
+
+
+
+
 from flask import Flask
 from flask import render_template, redirect, request, Response, session,jsonify
 from flask_mysqldb import MySQL, MySQLdb
@@ -183,7 +191,7 @@ def deposito():
             # Incluir la fecha y hora del depósito
             cur.execute('INSERT INTO depositos (usuario, deposito, fecha) VALUES (%s, %s, NOW())', (usuario, monto_deposito))
             mysql.connection.commit()
-            return render_template('deposito.html', mensaje="Depósito realizado con éxito. Por favor espera a que un administrador acepte tu deposito", usuario=usuario)
+            return render_template('deposito.html', mensaje="Peticion realizada con éxito. Por favor espera a que un administrador acepte tu deposito", usuario=usuario)
         else:
             return redirect('/login')
     elif 'logueado' in session:
@@ -285,11 +293,11 @@ def aceptar_deposito():
             mysql.connection.commit()
             
             # Insertar el depósito en la tabla de depósitos aceptados
-            cur.execute('INSERT INTO depositos_aceptados (usuario, deposito, fecha) VALUES (%s, %s, %s, now())', (usuario, monto))
+            cur.execute('INSERT INTO depositos_aceptados (usuario, deposito, fecha) VALUES (%s, %s, now())', (usuario, monto))
             mysql.connection.commit()
             
             # Registrar la notificación de aceptación
-            cur.execute('INSERT INTO notificaciones (usuario, tipo, notificacion, fecha) VALUES (%s, %s, %s, now())', (usuario,'deposito', 'Aceptado', fecha))
+            cur.execute('INSERT INTO notificaciones (usuario, tipo, notificacion, fecha) VALUES (%s, %s, %s, now())', (usuario,'deposito', 'aceptado'))
             mysql.connection.commit()
             
             # Eliminar el depósito de la tabla de depósitos pendientes
