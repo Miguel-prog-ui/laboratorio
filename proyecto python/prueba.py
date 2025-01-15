@@ -9,7 +9,7 @@ app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'login'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mysql = MySQL(app)
-
+#xd
 @app.route('/')
 def home():
     return render_template('home.html')
