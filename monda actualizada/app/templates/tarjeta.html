@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarjeta de Débito Zinli</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='tarjeta.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="left-text">
+            <i class='bx bx-user-circle'></i> {{usuario}}
+        </div>
+        <span>TARJETA DE DÉBITO </span>
+    </div>
+    <div class="navbar">
+        <a href="/admin">Inicio</a>
+        <a href="/saldo">Consultar Saldo</a>
+        <a href="/deposito">Depósito</a>
+        <a href="/transferencia">Transferencia</a>
+        <a href="/pagos_servicios">Pagos de servicios</a>
+        <a href="/">Cerrar sesión</a>
+    </div>
+    <div class="container">
+        <div class="card zinli">
+            <div class="card-header">
+                <span class="bank-name">Neo Banca</span>
+            </div>
+            <div class="card-body">
+                <div class="card-number-cvv">
+                    <div class="card-number">1234 5678 9123 4567</div>
+                    <div class="card-cvv">
+                        <span class="label">CVV</span>
+                        <span class="value">123</span>
+                    </div>
+                </div>
+                <div class="card-expiry">
+                    <span class="label">Válida hasta</span>
+                    <span class="value">12/26</span>
+                </div>
+                <div class="card-holder">
+                    <span class="label">Titular</span>
+                    <span class="value">Juan Pérez</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
