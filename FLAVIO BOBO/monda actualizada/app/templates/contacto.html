@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='contacto.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='imagenes/logo.png') }}" type="image/x-icon">
+</head>
+<body>
+    <header class="header">
+        <div class="menu container">
+            <a href="#" class="logo">
+                <img src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="NEO BANCO Logo" class="logo-large">
+            </a>
+            <input type="checkbox" id="menu">
+            <label for="menu">
+                <img src="{{ url_for('static', filename='imagenes/menu.png') }}" class="menu-icono" alt="">
+            </label>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+        <h2>Contacto</h2>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam voluptatem repellendus hic id ex? Voluptas officiis commodi repellendus voluptate laudantium fugiat repellat, eligendi nobis asperiores adipisci blanditiis soluta alias totam.</p>
+
+        <form method="POST" action="/contacto">
+            <input class="campo" type="text" name="nombre_comentario" placeholder="nombre" required>
+            <input class="campo" type="email" name="email_comentario" placeholder="email" required>
+            <input class="campo" type="text" name="comentario_comentario" placeholder="comentario" required>
+            <input class="btn-2 space" type="submit" value="enviar">
+        </form>
+    </header>
+</body>
+</html>
