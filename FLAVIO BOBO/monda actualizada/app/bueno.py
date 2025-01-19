@@ -3,6 +3,7 @@
 #programadores:Miguel Mijares, Livio Garcia, Jeam-pierre Hermosilla, Isaac Rengifo
 #version: 1.0.0
 
+from decimal import Decimal
 from flask import Flask
 from flask import render_template, redirect, request, Response, session,jsonify
 from flask_mysqldb import MySQL, MySQLdb
@@ -24,27 +25,9 @@ def home():
 def login():
     return render_template('login si.html')
 
-@app.route('/contacto', methods=['GET', 'POST'])
+@app.route('/contacto')
 def contacto():
-    mensaje = ''
-    if request.method == 'POST' and 'nombre_comentario' in request.form and 'email_comentario' in request.form and 'comentario_comentario' in request.form:
-        _nombre_comentario = request.form['nombre_comentario']
-        _email_comentario = request.form['email_comentario']
-        _comentario_comentario = request.form['comentario_comentario']
-
-        cur = mysql.connection.cursor()
-        try:
-            cur.execute('INSERT INTO comentarios(nombre, correo, comentario) VALUES (%s, %s, %s)',
-                        (_nombre_comentario, _email_comentario, _comentario_comentario))
-            mysql.connection.commit()
-            mensaje = "Comentario enviado con éxito"
-        except Exception as e:
-            print(f"Error: {e}")
-            mensaje = "Hubo un error al enviar tu comentario"
-        finally:
-            cur.close()
-
-    return render_template('contacto.html', mensaje=mensaje)
+    return render_template('/contacto.html')
 
 @app.route('/acceso_login', methods=['GET', 'POST'])
 def acceso_login():
@@ -144,7 +127,85 @@ def admin():
     else:
         return redirect('/login')
 
+@app.route('/admin_dashboard')
+def admin_dashboard():
+    if 'logueado' in session and session.get('usuario') == 'admin':
+        usuario = session['usuario']
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM prestamos WHERE estatus = %s', ('pendiente',))
+        prestamos = cur.fetchall()
+        return render_template('admin_dashboard.html', prestamos=prestamos, usuario=usuario)
+    else:
+        return redirect('/login')
 
+
+@app.route('/aceptar_prestamo', methods=['POST'])
+def aceptar_prestamo():
+    if 'logueado' in session and session.get('usuario') == 'admin':
+        prestamo_id = request.form['prestamo_id']
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM prestamos WHERE id = %s', (prestamo_id,))
+        prestamo = cur.fetchone()
+
+        if prestamo:
+            usuario = prestamo['usuario']
+            monto = prestamo['monto']
+            cuotas = prestamo['cuotas']
+
+            # Calcular el monto de cada cuota
+            monto_cuota = monto / cuotas
+
+            # Actualizar el estado del préstamo a aprobado y establecer cuotas_restantes y monto_restante
+            cur.execute('UPDATE prestamos SET estatus = %s, cuotas_restantes = %s, monto_restante = %s WHERE id = %s', 
+                        ('aprobado', cuotas, monto, prestamo_id))
+            mysql.connection.commit()
+
+            # Actualizar el saldo del usuario
+            cur.execute('UPDATE usuarios SET saldo = saldo + %s WHERE usuario = %s', (monto, usuario))
+            mysql.connection.commit()
+
+            # Eliminar la notificación de solicitud pendiente
+            cur.execute('DELETE FROM notificaciones WHERE usuario = %s AND tipo = %s AND notificacion = %s', 
+                        (usuario, 'prestamo', 'pendiente'))
+            mysql.connection.commit()
+
+            cur.execute('INSERT INTO notificaciones (usuario, tipo, notificacion, fecha) VALUES (%s, %s, %s, NOW())', 
+                        (usuario, 'prestamo', 'aprobado'))
+            mysql.connection.commit()
+
+        return redirect('/admin_dashboard')
+    else:
+        return redirect('/login')
+
+
+
+@app.route('/rechazar_prestamo', methods=['POST'])
+def rechazar_prestamo():
+    if 'logueado' in session and session.get('usuario') == 'admin':
+        prestamo_id = request.form['prestamo_id']
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM prestamos WHERE id = %s', (prestamo_id,))
+        prestamo = cur.fetchone()
+
+        if prestamo:
+            usuario = prestamo['usuario']
+
+            # Actualizar el estado del préstamo a rechazado
+            cur.execute('UPDATE prestamos SET estatus = %s WHERE id = %s', ('rechazado', prestamo_id))
+            mysql.connection.commit()
+
+            # Eliminar la notificación de solicitud pendiente
+            cur.execute('DELETE FROM notificaciones WHERE usuario = %s AND tipo = %s AND notificacion = %s', 
+                        (usuario, 'prestamo', 'pendiente'))
+            mysql.connection.commit()
+
+            cur.execute('INSERT INTO notificaciones (usuario, tipo, notificacion, fecha) VALUES (%s, %s, %s, NOW())', 
+                        (usuario, 'prestamo', 'rechazado'))
+            mysql.connection.commit()
+
+        return redirect('/admin_dashboard')
+    else:
+        return redirect('/login')
 
 @app.route('/deposito', methods=['GET', 'POST'])
 def deposito():
@@ -274,90 +335,96 @@ def transferencia():
     else:
         return redirect('/login')
 
+@app.route('/pago_cuotas', methods=['GET', 'POST'])
+def pago_cuotas():
+    mensaje = ""
+    usuario = session['usuario'] if 'logueado' in session else None
+    if request.method == 'POST' and usuario:
+        prestamo_id = request.form['prestamo_id']
+        num_cuotas = int(request.form['num_cuotas'])
+        monto_pago = Decimal(request.form['monto_pago'])
+
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM prestamos WHERE id = %s AND usuario = %s AND estatus = %s', (prestamo_id, usuario, 'aprobado'))
+        prestamo = cur.fetchone()
+
+        if prestamo:
+            cuotas_restantes = prestamo['cuotas_restantes']
+            monto_restante = Decimal(prestamo['monto_restante'])
+
+            try:
+                # Aplicar interés simple del 10% al monto restante
+                interes = monto_restante * Decimal('0.10')
+                monto_restante_con_interes = monto_restante + interes
+
+                # Restringir el pago para la última cuota
+                if cuotas_restantes == 1 and (num_cuotas != 1 or monto_pago < monto_restante_con_interes):
+                    mensaje = f"Solo queda una cuota, debes pagar el monto total restante con interés de {monto_restante_con_interes:.2f}."
+                    prestamos = [{'id': prestamo_id, 'monto_restante': prestamo['monto_restante'], 'cuotas_restantes': cuotas_restantes, 'fecha': prestamo['fecha'], 'estatus': prestamo['estatus'], 'monto_con_interes': round(monto_restante_con_interes, 2)}]
+                    return render_template('pago_cuotas.html', mensaje=mensaje, usuario=usuario, prestamos=prestamos)
+
+                monto_cuota = monto_restante_con_interes / cuotas_restantes
+                if monto_pago < (monto_cuota * num_cuotas):
+                    mensaje = f"El monto a pagar debe ser al menos {monto_cuota * num_cuotas:.2f} para {num_cuotas} cuotas."
+                    prestamos = [{'id': prestamo_id, 'monto_restante': prestamo['monto_restante'], 'cuotas_restantes': cuotas_restantes, 'fecha': prestamo['fecha'], 'estatus': prestamo['estatus'], 'monto_con_interes': round(monto_restante_con_interes, 2)}]
+                    return render_template('pago_cuotas.html', mensaje=mensaje, usuario=usuario, prestamos=prestamos)
+
+                nuevo_monto_restante = monto_restante_con_interes - monto_pago
+                nuevas_cuotas_restantes = max(cuotas_restantes - num_cuotas, 0)
+                nuevo_estatus = 'pagado' if nuevo_monto_restante <= 0 else 'aprobado'
+
+                if nuevo_monto_restante < 0:
+                    monto_pago += nuevo_monto_restante
+                    nuevo_monto_restante = 0
+
+                cur.execute('UPDATE prestamos SET monto_restante = %s, cuotas_restantes = %s, estatus = %s WHERE id = %s AND usuario = %s', 
+                            (nuevo_monto_restante, nuevas_cuotas_restantes, nuevo_estatus, prestamo_id, usuario))
+                mysql.connection.commit()
+
+                cur.execute('UPDATE usuarios SET saldo = saldo - %s WHERE usuario = %s', (monto_pago, usuario))
+                mysql.connection.commit()
+
+                cur.execute('INSERT INTO notificaciones (usuario, tipo, notificacion, fecha) VALUES (%s, %s, %s, NOW())',
+                            (usuario, 'prestamo', 'Pago de cuota realizado con éxito'))
+                mysql.connection.commit()
+
+            except Exception as e:
+                mensaje = f"Ocurrió un error durante el cálculo: {str(e)}"
+                prestamos = [{'id': prestamo_id, 'monto_restante': prestamo['monto_restante'], 'cuotas_restantes': cuotas_restantes, 'fecha': prestamo['fecha'], 'estatus': prestamo['estatus'], 'monto_con_interes': round(monto_restante_con_interes, 2) if 'monto_restante_con_interes' in locals() else None}]
+                return render_template('pago_cuotas.html', mensaje=mensaje, usuario=usuario, prestamos=prestamos)
+        else:
+            mensaje = "Préstamo no encontrado o no aprobado"
+            prestamos = []
+
+    # Recargar la lista de préstamos aprobados para el usuario y mostrar el mensaje de éxito
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM prestamos WHERE usuario = %s AND estatus = %s', (usuario, 'aprobado'))
+    prestamos = cur.fetchall()
+
+    prestamos_actualizados = []
+    for prestamo in prestamos:
+        monto_restante = Decimal(prestamo['monto_restante'])
+        interes = monto_restante * Decimal('0.10')
+        monto_con_interes = monto_restante + interes
+        prestamo['monto_con_interes'] = round(monto_con_interes, 2)
+        prestamos_actualizados.append(prestamo)
+
+    return render_template('pago_cuotas.html', mensaje=mensaje, usuario=usuario, prestamos=prestamos_actualizados)
+
+@app.route('/ver_prestamos')
+def ver_prestamos():
+    if 'logueado' in session:
+        usuario = session['usuario']
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM prestamos WHERE usuario = %s AND estatus = %s', (usuario, 'aprobado'))
+        prestamos = cur.fetchall()
+        return render_template('ver_prestamos.html', prestamos=prestamos, usuario=usuario)
+    else:
+        return redirect('/login')
+
 @app.route('/administrador')
 def administrador():
-    if 'logueado' in session and session.get('usuario') == 'admin':
-        usuario = session['usuario']
-    return render_template('administrador.html',usuario=usuario)
-
-@app.route('/admin_dashboard')
-def admin_dashboard():
-    if 'logueado' in session and session.get('usuario') == 'admin':
-        usuario = session['usuario']
-        cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM prestamos WHERE estatus = %s', ('pendiente',))
-        prestamos = cur.fetchall()
-        return render_template('admin_dashboard.html', prestamos=prestamos, usuario=usuario)
-    else:
-        return redirect('/login')
-
-
-@app.route('/aceptar_prestamo', methods=['POST'])
-def aceptar_prestamo():
-    if 'logueado' in session and session.get('usuario') == 'admin':
-        prestamo_id = request.form['prestamo_id']
-        cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM prestamos WHERE id = %s', (prestamo_id,))
-        prestamo = cur.fetchone()
-
-        if prestamo:
-            usuario = prestamo['usuario']
-            monto = prestamo['monto']
-
-            # Actualizar el estado del préstamo a aprobado
-            cur.execute('UPDATE prestamos SET estatus = %s WHERE id = %s', ('aprobado', prestamo_id))
-            mysql.connection.commit()
-
-            # Actualizar el saldo del usuario
-            cur.execute('UPDATE usuarios SET saldo = saldo + %s WHERE usuario = %s', (monto, usuario))
-            mysql.connection.commit()
-
-            # Eliminar la notificación de solicitud pendiente
-            cur.execute('DELETE FROM notificaciones WHERE usuario = %s AND tipo = %s AND notificacion = %s', 
-                        (usuario, 'prestamo', 'pendiente'))
-            mysql.connection.commit()
-
-            cur.execute('INSERT INTO notificaciones (usuario, tipo, notificacion, fecha) VALUES (%s, %s, %s, NOW())', 
-                        (usuario, 'prestamo', 'aprobado'))
-            mysql.connection.commit()
-
-        return redirect('/admin_dashboard')
-    else:
-        return redirect('/login')
-
-@app.route('/rechazar_prestamo', methods=['POST'])
-def rechazar_prestamo():
-    if 'logueado' in session and session.get('usuario') == 'admin':
-        prestamo_id = request.form['prestamo_id']
-        cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM prestamos WHERE id = %s', (prestamo_id,))
-        prestamo = cur.fetchone()
-
-        if prestamo:
-            usuario = prestamo['usuario']
-
-            # Actualizar el estado del préstamo a rechazado
-            cur.execute('UPDATE prestamos SET estatus = %s WHERE id = %s', ('rechazado', prestamo_id))
-            mysql.connection.commit()
-
-            # Eliminar la notificación de solicitud pendiente
-            cur.execute('DELETE FROM notificaciones WHERE usuario = %s AND tipo = %s AND notificacion = %s', 
-                        (usuario, 'prestamo', 'pendiente'))
-            mysql.connection.commit()
-
-            cur.execute('INSERT INTO notificaciones (usuario, tipo, notificacion, fecha) VALUES (%s, %s, %s, NOW())', 
-                        (usuario, 'prestamo', 'rechazado'))
-            mysql.connection.commit()
-
-        return redirect('/admin_dashboard')
-    else:
-        return redirect('/login')
-    
-@app.route('/comentarios_admin')
-def comentario_admin():
-    if 'logueado' in session and session.get('usuario') == 'admin':
-        usuario = session['usuario']
-    return render_template('comentario_admin.html',usuario=usuario)
+    return render_template('administrador.html')
 
 @app.route('/deposito_admin')
 def deposito_admin():
@@ -387,4 +454,5 @@ def validate_password():
 if __name__ == '__main__':
     app.secret_key = 'miguel_hds'
     app.run(debug=True, host='0.0.0.0', port=5000)
+
 

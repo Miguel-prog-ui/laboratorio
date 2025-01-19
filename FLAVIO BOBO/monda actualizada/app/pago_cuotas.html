@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='saldo.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="left-text">
+            <i class='bx bx-user-circle'></i> {{usuario}}
+        </div>
+        <span>Pago de Prestamo</span>
+    </div>
+    <div class="navbar">
+        <a href="/admin">Inicio</a>
+        <a href="/saldo">Consultar Saldo</a>
+        <a href="/deposito">Depósito</a>
+        <a href="/transferencia">Transferencia</a>
+        <a href="/solicitar_prestamo">Solicitud de Préstamo</a>
+        <a href="/pago_cuotas">Pago prestamo</a>
+        <!-- <a href="/pagos_servicios">Pagos de servicios</a> -->
+        <a href="/">Cerrar sesión</a>
+    </div>
+</head>
+<body>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .input-form {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .input-form label, .input-form input, .input-form button {
+            display: block;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pago de Cuotas</h1>
+    {% if mensaje %}
+    <p>{{ mensaje }}</p>
+    {% endif %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Monto Restante</th>
+                <th>Interés Aplicado</th>
+                <th>Monto con Interés</th>
+                <th>Cuotas Restantes</th>
+                <th>Fecha</th>
+                <th>Estatus</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for prestamo in prestamos %}
+            <tr>
+                <td>{{ prestamo.id }}</td>
+                <td>{{ prestamo.monto_restante }}</td>
+                <td>10%</td>
+                <td>{{ '%.2f' % prestamo.monto_con_interes }}</td>
+                <td>{{ prestamo.cuotas_restantes }}</td>
+                <td>{{ prestamo.fecha }}</td>
+                <td>{{ prestamo.estatus }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="input-form">
+        <form method="POST">
+            <label for="prestamo_id">ID Préstamo:</label>
+            <input type="text" id="prestamo_id" name="prestamo_id" required>
+            <label for="num_cuotas">Número de Cuotas:</label>
+            <input type="number" id="num_cuotas" name="num_cuotas" required>
+            <label for="monto_pago">Monto a Pagar:</label>
+            <input type="number" id="monto_pago" name="monto_pago" required>
+            <button type="submit">Pagar Cuota</button>
+        </form>
+    </div>
+</body>
+</html>
