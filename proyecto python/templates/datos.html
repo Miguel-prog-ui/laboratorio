@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos de Prestamos</title>
+</head>
+<body>
+    <h1>Datos de Prestamos</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Monto</th>
+                <th>Cuotas</th>
+            </tr>
+        </thead>
+        <tbody id="datos-tbody">
+            <!-- Los datos serán insertados aquí por JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        fetch('/datos')
+            .then(response => response.json())
+            .then(datos => {
+                const tbody = document.getElementById('datos-tbody');
+                datos.forEach(dato => {
+                    const tr = document.createElement('tr');
+                    const tdId = document.createElement('td');
+                    const tdMonto = document.createElement('td');
+                    const tdCuotas = document.createElement('td');
+                    tdId.textContent = dato.id;
+                    tdMonto.textContent = dato.monto;
+                    tdCuotas.textContent = dato.cuotas;
+                    tr.appendChild(tdId);
+                    tr.appendChild(tdMonto);
+                    tr.appendChild(tdCuotas);
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(error => {
+                console.error('Error al obtener los datos:', error);
+            });
+    </script>
+</body>
+</html>
