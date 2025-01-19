@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú</title>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='transferencia.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+
+    
+</head>
+<body>
+    <div class="header-bar">
+        <div class="left-text">
+            <i class='bx bx-user-circle'></i> {{usuario}}
+        </div>
+        <span>TRANSFERIR</span>
+    </div>
+    <div class="navbar">
+        <a href="/admin">Inicio</a>
+        <a href="/saldo">Consultar Saldo</a>
+        <a href="/deposito">Depósito</a>
+        <a href="/solicitar_prestamo">Solicitud de Préstamo</a>
+        <a href="/transferencia">Transferencia</a>
+        <!-- <a href="/pagos_servicios">Pagos de servicios</a> -->
+        <a href="/">Cerrar sesión</a>
+    </div>
+    <div class="container">
+        <div class="form-container">
+            <h2>Transferir Fondos</h2>
+            <p>
+                {{mensaje}}
+            </p>
+            <!-- <?php echo $message; ?> Mostrar el mensaje aquí -->
+            <form method="POST" action="/transferencia">
+                <input type="text" name="txt_destinatario" placeholder="Usuario del destinatario" required>
+                <input type="email" name="txt_correo" placeholder="Correo del destinatario" required>
+                <input type="number" name="txt_monto" placeholder="Monto a transferir" required>
+                <input type="password" name="txt_contraseña" placeholder="Contraseña" required>
+                <input type="text" name="txt_concepto" placeholder="Concepto de la transferencia" required> <!-- Nuevo campo -->
+                <button type="submit">Transferir</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

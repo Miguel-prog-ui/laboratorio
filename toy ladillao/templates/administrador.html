@@ -1,0 +1,37 @@
+<? session_start(); ?>
+<!DOCTYPE html> 
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='administrador.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    
+</head>
+<body>
+    <div class="header-bar">
+        <div class="left-text">
+            <i class='bx bx-user-circle'></i> {{usuario}}
+        </div>
+        <span>BIENVENIDO A NUESTRO BANCO</span>
+    </div>
+    
+    
+    <div class="navbar">
+        <a href="/administrador">Inicio</a>
+        <a href="/admin_dashboard">prestamos</a>
+        <!-- <a href="/deposito">prestamos</a> -->
+        <!-- <a href="/transferencia">Transferencia</a>
+        <a href="/pagos_servicios">Pagos de servicios</a> -->
+        <a href="/">Cerrar sesión</a>
+    </div>
+    <div class="container">
+        <div class="welcome">
+            <h2>¡Bienvenido Administrador!</h2>
+            <p>Estamos encantados de tenerte aquí. Tu dedicación y esfuerzo son clave para nuestro éxito.<span class="highlight">¡Vamos a tener un día productivo!</span></p>
+        </div>
+    </div>
+</body>
+</html>
