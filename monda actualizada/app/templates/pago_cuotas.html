@@ -12,7 +12,7 @@
         <div class="left-text">
             <i class='bx bx-user-circle'></i> {{usuario}}
         </div>
-        <span>CONSULTAR SALDO</span>
+        <span>Pago de Prestamo</span>
     </div>
     <div class="navbar">
         <a href="/admin">Inicio</a>
@@ -26,34 +26,73 @@
     </div>
 </head>
 <body>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .input-form {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .input-form label, .input-form input, .input-form button {
+            display: block;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
     <h1>Pago de Cuotas</h1>
-    <p>Usuario: {{ usuario }}</p>
-
     {% if mensaje %}
-        <p>{{ mensaje }}</p>
+    <p>{{ mensaje }}</p>
     {% endif %}
-
-    {% if prestamos %}
-        <ul>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Monto Restante</th>
+                <th>Interés Aplicado</th>
+                <th>Monto con Interés</th>
+                <th>Cuotas Restantes</th>
+                <th>Fecha</th>
+                <th>Estatus</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for prestamo in prestamos %}
-                <li>Préstamo ID: {{ prestamo.id }} - Monto restante: {{ prestamo.monto_restante }}</li>
+            <tr>
+                <td>{{ prestamo.id }}</td>
+                <td>{{ prestamo.monto_restante }}</td>
+                <td>10%</td>
+                <td>{{ '%.2f' % prestamo.monto_con_interes }}</td>
+                <td>{{ prestamo.cuotas_restantes }}</td>
+                <td>{{ prestamo.fecha }}</td>
+                <td>{{ prestamo.estatus }}</td>
+            </tr>
             {% endfor %}
-        </ul>
-        <form method="POST" action="/pago_cuotas">
-            <label for="prestamo_id">ID del Préstamo:</label>
+        </tbody>
+    </table>
+    <div class="input-form">
+        <form method="POST">
+            <label for="prestamo_id">ID Préstamo:</label>
             <input type="text" id="prestamo_id" name="prestamo_id" required>
-            
-            <label for="num_cuotas">Número de Cuotas a Pagar:</label>
-            <input type="number" id="num_cuotas" name="num_cuotas" min="1" required>
-            
+            <label for="num_cuotas">Número de Cuotas:</label>
+            <input type="number" id="num_cuotas" name="num_cuotas" required>
             <label for="monto_pago">Monto a Pagar:</label>
-            <input type="number" id="monto_pago" name="monto_pago" step="0.01" min="0.01" required>
-            
-            <button type="submit">Pagar Cuotas</button>
+            <input type="number" id="monto_pago" name="monto_pago" required>
+            <button type="submit">Pagar Cuota</button>
         </form>
-        
-    {% else %}
-        <p>No hay préstamos aprobados o encontrados.</p>
-    {% endif %}
+    </div>
 </body>
 </html>

@@ -337,8 +337,9 @@ def transferencia():
 
 @app.route('/pago_cuotas', methods=['GET', 'POST'])
 def pago_cuotas():
-    if request.method == 'POST' and 'logueado' in session:
-        usuario = session['usuario']
+    mensaje = ""
+    usuario = session['usuario'] if 'logueado' in session else None
+    if request.method == 'POST' and usuario:
         prestamo_id = request.form['prestamo_id']
         num_cuotas = int(request.form['num_cuotas'])
         monto_pago = Decimal(request.form['monto_pago'])
@@ -351,42 +352,64 @@ def pago_cuotas():
             cuotas_restantes = prestamo['cuotas_restantes']
             monto_restante = Decimal(prestamo['monto_restante'])
 
-            if cuotas_restantes == 1 and (num_cuotas != 1 or monto_pago != monto_restante):
-                return render_template('pago_cuotas.html', mensaje="Solo queda una cuota, debes pagar el monto total restante.", usuario=usuario, prestamos=[prestamo])
+            try:
+                # Aplicar interés simple del 10% al monto restante
+                interes = monto_restante * Decimal('0.10')
+                monto_restante_con_interes = monto_restante + interes
 
-            monto_cuota = monto_restante / cuotas_restantes
-            if monto_pago < (monto_cuota * num_cuotas):
-                return render_template('pago_cuotas.html', mensaje=f"El monto a pagar debe ser al menos {monto_cuota * num_cuotas:.2f} para {num_cuotas} cuotas.", usuario=usuario, prestamos=[prestamo])
+                # Restringir el pago para la última cuota
+                if cuotas_restantes == 1 and (num_cuotas != 1 or monto_pago < monto_restante_con_interes):
+                    mensaje = f"Solo queda una cuota, debes pagar el monto total restante con interés de {monto_restante_con_interes:.2f}."
+                    prestamos = [{'id': prestamo_id, 'monto_restante': prestamo['monto_restante'], 'cuotas_restantes': cuotas_restantes, 'fecha': prestamo['fecha'], 'estatus': prestamo['estatus'], 'monto_con_interes': round(monto_restante_con_interes, 2)}]
+                    return render_template('pago_cuotas.html', mensaje=mensaje, usuario=usuario, prestamos=prestamos)
 
-            nuevo_monto_restante = monto_restante - monto_pago
-            nuevas_cuotas_restantes = max(cuotas_restantes - num_cuotas, 0)
-            nuevo_estatus = 'pagado' if nuevo_monto_restante <= 0 else 'aprobado'
+                monto_cuota = monto_restante_con_interes / cuotas_restantes
+                if monto_pago < (monto_cuota * num_cuotas):
+                    mensaje = f"El monto a pagar debe ser al menos {monto_cuota * num_cuotas:.2f} para {num_cuotas} cuotas."
+                    prestamos = [{'id': prestamo_id, 'monto_restante': prestamo['monto_restante'], 'cuotas_restantes': cuotas_restantes, 'fecha': prestamo['fecha'], 'estatus': prestamo['estatus'], 'monto_con_interes': round(monto_restante_con_interes, 2)}]
+                    return render_template('pago_cuotas.html', mensaje=mensaje, usuario=usuario, prestamos=prestamos)
 
-            if nuevo_monto_restante < 0:
-                monto_pago += nuevo_monto_restante
-                nuevo_monto_restante = 0
+                nuevo_monto_restante = monto_restante_con_interes - monto_pago
+                nuevas_cuotas_restantes = max(cuotas_restantes - num_cuotas, 0)
+                nuevo_estatus = 'pagado' if nuevo_monto_restante <= 0 else 'aprobado'
 
-            cur.execute('UPDATE prestamos SET monto_restante = %s, cuotas_restantes = %s, estatus = %s WHERE id = %s AND usuario = %s', 
-                        (nuevo_monto_restante, nuevas_cuotas_restantes, nuevo_estatus, prestamo_id, usuario))
-            mysql.connection.commit()
+                if nuevo_monto_restante < 0:
+                    monto_pago += nuevo_monto_restante
+                    nuevo_monto_restante = 0
 
-            cur.execute('UPDATE usuarios SET saldo = saldo - %s WHERE usuario = %s', (monto_pago, usuario))
-            mysql.connection.commit()
+                cur.execute('UPDATE prestamos SET monto_restante = %s, cuotas_restantes = %s, estatus = %s WHERE id = %s AND usuario = %s', 
+                            (nuevo_monto_restante, nuevas_cuotas_restantes, nuevo_estatus, prestamo_id, usuario))
+                mysql.connection.commit()
 
-            cur.execute('INSERT INTO notificaciones (usuario, tipo, notificacion, fecha) VALUES (%s, %s, %s, NOW())',
-                        (usuario, 'prestamo', 'Pago de cuota realizado con éxito'))
-            mysql.connection.commit()
+                cur.execute('UPDATE usuarios SET saldo = saldo - %s WHERE usuario = %s', (monto_pago, usuario))
+                mysql.connection.commit()
+
+                cur.execute('INSERT INTO notificaciones (usuario, tipo, notificacion, fecha) VALUES (%s, %s, %s, NOW())',
+                            (usuario, 'prestamo', 'Pago de cuota realizado con éxito'))
+                mysql.connection.commit()
+
+            except Exception as e:
+                mensaje = f"Ocurrió un error durante el cálculo: {str(e)}"
+                prestamos = [{'id': prestamo_id, 'monto_restante': prestamo['monto_restante'], 'cuotas_restantes': cuotas_restantes, 'fecha': prestamo['fecha'], 'estatus': prestamo['estatus'], 'monto_con_interes': round(monto_restante_con_interes, 2) if 'monto_restante_con_interes' in locals() else None}]
+                return render_template('pago_cuotas.html', mensaje=mensaje, usuario=usuario, prestamos=prestamos)
         else:
-            return render_template('pago_cuotas.html', mensaje="Préstamo no encontrado o no aprobado", usuario=usuario, prestamos=[])
+            mensaje = "Préstamo no encontrado o no aprobado"
+            prestamos = []
 
     # Recargar la lista de préstamos aprobados para el usuario y mostrar el mensaje de éxito
-    usuario = session['usuario']
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM prestamos WHERE usuario = %s AND estatus = %s', (usuario, 'aprobado'))
     prestamos = cur.fetchall()
 
-    return render_template('pago_cuotas.html', mensaje="Pago de cuota realizado con éxito", usuario=usuario, prestamos=prestamos)
+    prestamos_actualizados = []
+    for prestamo in prestamos:
+        monto_restante = Decimal(prestamo['monto_restante'])
+        interes = monto_restante * Decimal('0.10')
+        monto_con_interes = monto_restante + interes
+        prestamo['monto_con_interes'] = round(monto_con_interes, 2)
+        prestamos_actualizados.append(prestamo)
 
+    return render_template('pago_cuotas.html', mensaje=mensaje, usuario=usuario, prestamos=prestamos_actualizados)
 
 @app.route('/ver_prestamos')
 def ver_prestamos():
@@ -431,6 +454,5 @@ def validate_password():
 if __name__ == '__main__':
     app.secret_key = 'miguel_hds'
     app.run(debug=True, host='0.0.0.0', port=5000)
-
 
 
