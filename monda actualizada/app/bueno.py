@@ -3,6 +3,7 @@
 #programadores:Miguel Mijares, Livio Garcia, Jeam-pierre Hermosilla, Isaac Rengifo
 #version: 1.0.0
 
+from decimal import Decimal
 from flask import Flask
 from flask import render_template, redirect, request, Response, session,jsonify
 from flask_mysqldb import MySQL, MySQLdb
@@ -149,9 +150,14 @@ def aceptar_prestamo():
         if prestamo:
             usuario = prestamo['usuario']
             monto = prestamo['monto']
+            cuotas = prestamo['cuotas']
 
-            # Actualizar el estado del préstamo a aprobado
-            cur.execute('UPDATE prestamos SET estatus = %s WHERE id = %s', ('aprobado', prestamo_id))
+            # Calcular el monto de cada cuota
+            monto_cuota = monto / cuotas
+
+            # Actualizar el estado del préstamo a aprobado y establecer cuotas_restantes y monto_restante
+            cur.execute('UPDATE prestamos SET estatus = %s, cuotas_restantes = %s, monto_restante = %s WHERE id = %s', 
+                        ('aprobado', cuotas, monto, prestamo_id))
             mysql.connection.commit()
 
             # Actualizar el saldo del usuario
@@ -170,6 +176,8 @@ def aceptar_prestamo():
         return redirect('/admin_dashboard')
     else:
         return redirect('/login')
+
+
 
 @app.route('/rechazar_prestamo', methods=['POST'])
 def rechazar_prestamo():
@@ -327,6 +335,70 @@ def transferencia():
     else:
         return redirect('/login')
 
+@app.route('/pago_cuotas', methods=['GET', 'POST'])
+def pago_cuotas():
+    if request.method == 'POST' and 'logueado' in session:
+        usuario = session['usuario']
+        prestamo_id = request.form['prestamo_id']
+        num_cuotas = int(request.form['num_cuotas'])
+        monto_pago = Decimal(request.form['monto_pago'])
+
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM prestamos WHERE id = %s AND usuario = %s AND estatus = %s', (prestamo_id, usuario, 'aprobado'))
+        prestamo = cur.fetchone()
+
+        if prestamo:
+            cuotas_restantes = prestamo['cuotas_restantes']
+            monto_restante = Decimal(prestamo['monto_restante'])
+
+            if cuotas_restantes == 1 and (num_cuotas != 1 or monto_pago != monto_restante):
+                return render_template('pago_cuotas.html', mensaje="Solo queda una cuota, debes pagar el monto total restante.", usuario=usuario, prestamos=[prestamo])
+
+            monto_cuota = monto_restante / cuotas_restantes
+            if monto_pago < (monto_cuota * num_cuotas):
+                return render_template('pago_cuotas.html', mensaje=f"El monto a pagar debe ser al menos {monto_cuota * num_cuotas:.2f} para {num_cuotas} cuotas.", usuario=usuario, prestamos=[prestamo])
+
+            nuevo_monto_restante = monto_restante - monto_pago
+            nuevas_cuotas_restantes = max(cuotas_restantes - num_cuotas, 0)
+            nuevo_estatus = 'pagado' if nuevo_monto_restante <= 0 else 'aprobado'
+
+            if nuevo_monto_restante < 0:
+                monto_pago += nuevo_monto_restante
+                nuevo_monto_restante = 0
+
+            cur.execute('UPDATE prestamos SET monto_restante = %s, cuotas_restantes = %s, estatus = %s WHERE id = %s AND usuario = %s', 
+                        (nuevo_monto_restante, nuevas_cuotas_restantes, nuevo_estatus, prestamo_id, usuario))
+            mysql.connection.commit()
+
+            cur.execute('UPDATE usuarios SET saldo = saldo - %s WHERE usuario = %s', (monto_pago, usuario))
+            mysql.connection.commit()
+
+            cur.execute('INSERT INTO notificaciones (usuario, tipo, notificacion, fecha) VALUES (%s, %s, %s, NOW())',
+                        (usuario, 'prestamo', 'Pago de cuota realizado con éxito'))
+            mysql.connection.commit()
+        else:
+            return render_template('pago_cuotas.html', mensaje="Préstamo no encontrado o no aprobado", usuario=usuario, prestamos=[])
+
+    # Recargar la lista de préstamos aprobados para el usuario y mostrar el mensaje de éxito
+    usuario = session['usuario']
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM prestamos WHERE usuario = %s AND estatus = %s', (usuario, 'aprobado'))
+    prestamos = cur.fetchall()
+
+    return render_template('pago_cuotas.html', mensaje="Pago de cuota realizado con éxito", usuario=usuario, prestamos=prestamos)
+
+
+@app.route('/ver_prestamos')
+def ver_prestamos():
+    if 'logueado' in session:
+        usuario = session['usuario']
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM prestamos WHERE usuario = %s AND estatus = %s', (usuario, 'aprobado'))
+        prestamos = cur.fetchall()
+        return render_template('ver_prestamos.html', prestamos=prestamos, usuario=usuario)
+    else:
+        return redirect('/login')
+
 @app.route('/administrador')
 def administrador():
     return render_template('administrador.html')
@@ -359,4 +431,6 @@ def validate_password():
 if __name__ == '__main__':
     app.secret_key = 'miguel_hds'
     app.run(debug=True, host='0.0.0.0', port=5000)
-#
+
+
+
