@@ -32,6 +32,9 @@ def contacto():
 
 @app.route('/acceso_login', methods=['GET', 'POST'])
 def acceso_login():
+
+
+        #Le pide al usuario los datos correspondientes para entrar a la banca online
     if request.method == 'POST' and 'txt_correo' in request.form and 'txt_password' in request.form:
         _correo = request.form['txt_correo']
         _password = request.form['txt_password']
@@ -40,6 +43,7 @@ def acceso_login():
         cur.execute('SELECT * FROM usuarios WHERE correo = %s AND password = %s', (_correo, _password,))
         account = cur.fetchone()
 
+        #Define la cuenta administrador en la banca online y lo separa de los usuarios comunes
         if account:
             if account['codigo'] == 0:
                 session['logueado'] = True
@@ -57,6 +61,8 @@ def acceso_login():
 
 @app.route('/crear_cuenta', methods=['GET', 'POST'])
 def crear_cuenta():
+
+        #Le pide al usuario una variedad de datos para la creacion de la cuenta
     if request.method == 'POST' and 'txt_correo' in request.form and 'txt_password' in request.form and 'txt_usuario' in request.form:
         _correo = request.form['txt_correo']
         _password = request.form['txt_password']
@@ -68,6 +74,7 @@ def crear_cuenta():
         cur.execute('SELECT * FROM usuarios WHERE usuario = %s', (_usuario,))
         user_exists = cur.fetchone()
 
+        #Verifica si los datos ingresados por el usuario no estan en uso por otros usuarios
         if email_exists:
             return render_template('login si.html', mensaje_malo="El correo ya está registrado")
         elif user_exists:
@@ -134,6 +141,8 @@ def admin():
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
+
+    #Permite que el administrador de la banca pueda ver, aceptar o rechazar los prestamos pendientes de los usuarios
     if 'logueado' in session and session.get('usuario') == 'admin':
         usuario = session['usuario']
         cur = mysql.connection.cursor()
@@ -146,6 +155,7 @@ def admin_dashboard():
 
 @app.route('/aceptar_prestamo', methods=['POST'])
 def aceptar_prestamo():
+
     if 'logueado' in session and session.get('usuario') == 'admin':
         prestamo_id = request.form['prestamo_id']
         cur = mysql.connection.cursor()
@@ -297,6 +307,7 @@ def saldo():
 def transferencia():
     if request.method == 'POST':
         if 'logueado' in session:
+            
             usuario_remitente = session['usuario']
             contrasena_remitente = request.form['txt_contrasena']
             destinatario = request.form['txt_destinatario']
@@ -449,7 +460,12 @@ def compra_venta_dolares():
                     cur.execute('UPDATE usuarios SET saldo = %s WHERE usuario = %s', (nuevo_saldo_bs, usuario))
                     cur.execute('UPDATE usuarios SET saldo_dolares = saldo_dolares + %s WHERE usuario = %s', (monto, usuario))
                     mysql.connection.commit()
-                    mensaje = "Compra realizada con éxito"
+                    mensaje = f"Compra de {monto} dólares realizada con éxito"
+                    
+                    # Insertar notificación de compra
+                    cur.execute('INSERT INTO notificaciones (usuario, tipo, notificacion, fecha) VALUES (%s, %s, %s, NOW())',
+                                (usuario, 'compra', f"realizada: {monto} dólares"))
+                    mysql.connection.commit()
                 else:
                     mensaje = "Saldo insuficiente para la compra"
 
@@ -463,7 +479,12 @@ def compra_venta_dolares():
                     nuevo_saldo_bs = monto * tasa_cambio  # Calcular el saldo a agregar
                     cur.execute('UPDATE usuarios SET saldo = saldo + %s WHERE usuario = %s', (nuevo_saldo_bs, usuario))
                     mysql.connection.commit()
-                    mensaje = "Venta realizada con éxito"
+                    mensaje = f"Venta de {monto} dólares realizada con éxito"
+                    
+                    # Insertar notificación de venta
+                    cur.execute('INSERT INTO notificaciones (usuario, tipo, notificacion, fecha) VALUES (%s, %s, %s, NOW())',
+                                (usuario, 'venta', f"realizada: {monto} dólares"))
+                    mysql.connection.commit()
                 else:
                     mensaje = "Saldo en dólares insuficiente para la venta"
 
