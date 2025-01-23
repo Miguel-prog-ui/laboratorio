@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='transferencia.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" href="{{ url_for('static', filename='imagenes/logo.png') }}" type="image/x-icon">
+</head>
+<body>
+    <div class="header-bar">
+        <div class="left-text">
+            <i class='bx bx-user-circle'></i> {{usuario}}
+        </div>
+        <span>TRANSFERIR</span>
+    </div>
+    <div class="navbar">
+        <a href="/admin">Inicio</a>
+        <a href="/saldo">Consultar Saldo</a>
+        <a href="/deposito">Depósito</a>
+        <a href="/transferencia">Transferencia</a>
+        <a href="/solicitar_prestamo">Solicitud de Préstamo</a>
+        <a href="/">Cerrar sesión</a>
+    </div>
+    <div class="container">
+        <div class="forms-wrapper">
+            <div class="form-container" id="transferencia-interna-form">
+                <h2>Transferir Fondos Internamente</h2>
+                <form method="POST" action="/transferencia">
+                    <div class="input-group">
+                        <input type="text" name="txt_destinatario" placeholder="Usuario del destinatario" required>
+                        <input type="email" name="txt_correo" placeholder="Correo del destinatario" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="number" name="txt_monto" placeholder="Monto a transferir" required>
+                        <input type="password" name="txt_contrasena" placeholder="Contraseña" required>
+                    </div>
+                    <input type="text" name="txt_concepto" class="full-width" placeholder="Concepto de la transferencia" required>
+                    <button type="submit">Transferir</button>
+                </form>
+                <p>
+                    ¿Quiere transferir a otro banco? <a href="#" id="show-otro-banco-form">Click aquí</a>
+                </p>
+            </div>
+
+            <div class="form-container" id="otro-banco-form" style="display: none;">
+                <h2>Transferir a Otro Banco</h2>
+                <form method="POST" action="/transferencia">
+                    <div class="input-group">
+                        <input type="text" name="txt_nombre" placeholder="Nombre" required>
+                        <select name="txt_banco" required>
+                            <option value="" disabled selected>Seleccione el banco</option>
+                            <option value="Banco Central de Venezuela">Banco Central de Venezuela (0001)</option>
+                            <option value="Banco de Venezuela">Banco de Venezuela (BDV) (0102)</option>
+                            <option value="Banco Venezolano de Crédito">Banco Venezolano de Crédito (BVC) (0104)</option>
+                            <option value="Banco Mercantil">Banco Mercantil (0105)</option>
+                            <option value="Banco Provincial">Banco Provincial (BBVA) (0108)</option>
+                            <option value="Bancaribe">Bancaribe (0114)</option>
+                            <option value="Banco Exterior">Banco Exterior (0115)</option>
+                            <option value="Banco Caroní">Banco Caroní (0128)</option>
+                            <option value="Banesco Banco Universal">Banesco Banco Universal (0134)</option>
+                            <option value="Sofitasa">Sofitasa (0137)</option>
+                            <option value="Banco Plaza">Banco Plaza (0138)</option>
+                            <option value="Bangente">Bangente (0146)</option>
+                            <option value="Banco Fondo Común">Banco Fondo Común (BFC) (0151)</option>
+                            <option value="100% Banco">100% Banco (0156)</option>
+                            <option value="Del Sur Banco Universal">Del Sur Banco Universal (0157)</option>
+                            <option value="Banco del Tesoro">Banco del Tesoro (0163)</option>
+                            <option value="Banco Agrícola de Venezuela">Banco Agrícola de Venezuela (0166)</option>
+                            <option value="Bancrecer">Bancrecer (0168)</option>
+                            <option value="Mi Banco">Mi Banco, Banco Microfinanciero C.A (0169)</option>
+                            <option value="Banco Activo">Banco Activo (0171)</option>
+                            <option value="Bancamiga">Bancamiga (0172)</option>
+                            <option value="Banplus">Banplus (0174)</option>
+                            <option value="Banco Bicentenario del Pueblo">Banco Bicentenario del Pueblo (0175)</option>
+                            <option value="Banco de la Fuerza Armada Nacional Bolivariana">Banco de la Fuerza Armada Nacional Bolivariana (BANFANB) (0177)</option>
+                            <option value="Banco Nacional de Crédito">Banco Nacional de Crédito (BNC) (0191)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <select name="txt_tipo_cuenta" required>
+                            <option value="" disabled selected>Tipo de cuenta</option>
+                            <option value="Ahorro">Ahorro</option>
+                            <option value="Corriente">Corriente</option>
+                        </select>
+                        <input type="text" name="txt_cuenta_externa" placeholder="Número de cuenta" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="number" name="txt_monto" placeholder="Monto a transferir" required>
+                        <input type="password" name="txt_contrasena" placeholder="Contraseña" required>
+                    </div>
+                    <input type="text" name="txt_concepto" class="full-width" placeholder="Concepto de la transferencia" required>
+                    <button type="submit">Transferir</button>
+                </form>
+                <p>
+                    ¿Quiere transferir internamente? <a href="#" id="show-transferencia-interna-form">Click aquí</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('show-otro-banco-form').addEventListener('click', function() {
+            document.getElementById('transferencia-interna-form').style.display = 'none';
+            document.getElementById('otro-banco-form').style.display = 'block';
+        });
+
+        document.getElementById('show-transferencia-interna-form').addEventListener('click', function() {
+            document.getElementById('otro-banco-form').style.display = 'none';
+            document.getElementById('transferencia-interna-form').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "poppins", sans-serif;
+    color: #080606;
+
+}body {
+    /* font-family: 'Helvetica Neue', Arial, sans-serif; */
+    color: #333;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: #ffff; 
+   
+}
+.header-bar {
+    position: relative; /* Necesario para usar position: absolute en los elementos hijos */
+    background: #1A2D42; /* Gris oscuro */
+    height: 50px;
+    display: flex;
+    align-items: center; /* Centrar verticalmente el contenido dentro de la barra */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 0 10px; /* Añadir algo de espacio a los lados */
+}
+
+.header-bar .left-text {
+    display: flex; /* Añadir flex para alinear el ícono y el texto */
+    align-items: center; /* Centrar verticalmente el ícono y el texto */
+    position: absolute;
+    left: 10px;
+    font-size: 18px;
+    color: white;
+    font-weight: 400;
+}
+
+.header-bar .left-text i {
+    margin-right: 8px; /* Espacio entre el ícono y el texto */
+    font-size: 24px; /* Ajustar el tamaño del ícono */
+    color: white; /* Cambiar el color del ícono a blanco */
+}
+
+.header-bar span {
+    margin: 0 auto; /* Para centrar el span dentro de la barra */
+    position: absolute;
+    left: 50%; /* Coloca el span en el medio */
+    transform: translateX(-50%); /* Centra el span */
+    font-size: 18px;
+    color: white;
+    font-weight: 400;
+}
+.navbar {
+    background-color: #C0C8CA; /* Blanco para minimalismo */
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.navbar a {
+    color: #25252b; /* Gris oscuro */
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 15px;
+    font-size: 16px;
+    transition: color 0.3s ease-in-out; /* Transición suave */
+}
+.navbar a:hover {
+    color: #65a1e5; /* Verde claro al pasar el mouse */
+}
+
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px; /* Incrementar el padding */
+}
+
+.forms-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px; /* Incrementar el espacio entre los formularios */
+}
+
+.form-container {
+    background-color: #ffff;
+    padding: 30px; /* Incrementar el padding */
+    border-radius: 15px; /* Incrementar el radio de borde */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Incrementar la sombra */
+    width: 100%;
+    max-width: 600px; /* Incrementar el ancho máximo */
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.form-container:hover {
+    transform: scale(1.05);
+}
+
+.input-group {
+    display: flex;
+    gap: 15px; /* Incrementar el espacio entre inputs */
+    margin: 15px 0; /* Incrementar el margen */
+}
+
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="number"],
+.form-container input[type="password"],
+.form-container select {
+    width: calc(50% - 15px); /* Ajustar el ancho */
+    padding: 15px; /* Incrementar el padding */
+    font-size: 16px;
+    border: 1px solid #b5b5b5;
+    border-radius: 20px;
+}
+
+.form-container select {
+    width: calc(50% - 30px); /* Hacer el select más pequeño */
+}
+
+.form-container input.full-width {
+    width: calc(100% - 30px); /* Ajustar el ancho para que sea del tamaño del contenedor */
+    padding: 15px; /* Incrementar el padding */
+}
+
+.form-container button {
+    width: 100%;
+    background-color: #5a92ae;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 15px; /* Incrementar el padding */
+    font-size: 16px;
+    border-radius: 20px;
+    margin-top: 15px; /* Incrementar el margen superior */
+}
+
+.form-container button:hover {
+    background-color: #5a7eae;
+}
+
+/* Ajustar la altura del cuadro de selección */
+.form-container select {
+    height: auto; /* Dejar que el navegador determine la mejor altura */
+    font-size: 16px; /* Ajustar el tamaño de fuente */
+    padding: 5px; /* Ajustar el padding */
+}
+
+h2 {
+    font-size: 30px; /* Incrementar el tamaño de fuente */
+    margin-bottom: 25px; /* Incrementar el margen inferior */
+}

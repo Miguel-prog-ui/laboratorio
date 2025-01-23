@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comentarios</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='comentarios_admin.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" href="{{ url_for('static', filename='imagenes/logo.png') }}" type="image/x-icon">
+</head>
+<body>
+    <div class="header-bar">
+        <div class="left-text">
+            <i class='bx bx-user-circle'></i> {{ usuario }}
+        </div>
+        <span>COMENTARIOS</span>
+    </div>
+
+    <div class="navbar">
+        <a href="/administrador">Inicio</a>
+        <a href="/admin_dashboard">Préstamos</a>
+        <a href="/comentarios_admin">Comentarios</a>
+        <a href="/">Cerrar sesión</a>
+    </div>
+
+    <div class="container">
+        <!-- Barra de encabezado fija -->
+        <div class="table-header">
+            <div class="header-usuario">Nombre</div>
+            <div class="header-correo">Correo</div>
+            <div class="header-comentario">Comentario</div>
+            <div class="header-fecha">Fecha</div>
+            <div class="header-acciones">Acciones</div>
+        </div>
+
+        <div class="table-container"> <!-- Contenedor para el desplazamiento -->
+            <table class="styled-table">
+                <tbody>
+                    {% for comentario in comentarios %}
+                    <tr>
+                        <td class="cell-usuario">{{ comentario.nombre }}</td>
+                        <td class="cell-correo">{{ comentario.correo }}</td>
+                        <td class="cell-comentario">{{ comentario.comentario[:50] }}{% if comentario.comentario|length > 50 %}...{% endif %}</td>
+                        <td class="cell-fecha">{{ comentario.fecha }}</td>
+                        <td class="cell-acciones">
+                            <div class="btn-container">
+                                <form action="/eliminar_comentario" method="POST" style="display: inline;">
+                                    <input type="hidden" name="comentario_id" value="{{ comentario.id }}">
+                                    <button type="submit" class="btn btn-rechazar">Eliminar</button>
+                                </form>
+                                <button type="button" class="btn btn-revisar" onclick="showModal('{{ comentario.nombre }}', '{{ comentario.correo }}', '{{ comentario.comentario }}', '{{ comentario.fecha }}')">Revisar</button>
+                                <button type="button" class="btn btn-responder" onclick="showResponderModal('{{ comentario.id }}')">Responder</button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal para revisar comentario -->
+    <div id="comentarioModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modalNombre"></h3>
+            <p><strong>Correo:</strong> <span id="modalCorreo"></span></p>
+            <p><strong>Comentario:</strong> <span id="modalComentario"></span></p>
+            <p><strong>Fecha:</strong> <span id="modalFecha"></span></p>
+        </div>
+    </div>
+
+    <!-- Modal para responder comentario -->
+    <div id="responderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeResponderModal()">&times;</span>
+            <h3>Responder al Comentario</h3>
+            <form action="/responder_comentario" method="POST">
+                <input type="hidden" id="comentarioId" name="comentario_id">
+                <textarea name="respuesta" rows="4" placeholder="Escribe tu respuesta aquí..." required></textarea>
+                <button type="submit" class="btn btn-enviar">Enviar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showModal(nombre, correo, comentario, fecha) {
+            document.getElementById('modalNombre').innerText = nombre;
+            document.getElementById('modalCorreo').innerText = correo;
+            document.getElementById('modalComentario').innerText = comentario;
+            document.getElementById('modalFecha').innerText = fecha;
+            document.getElementById('comentarioModal').style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById('comentarioModal').style.display = "none";
+        }
+
+        function showResponderModal(comentarioId) {
+            document.getElementById('comentarioId').value = comentarioId;
+            document.getElementById('responderModal').style.display = "block";
+        }
+
+        function closeResponderModal() {
+            document.getElementById('responderModal').style.display = "none";
+        }
+    </script>
+</body>
+</html>

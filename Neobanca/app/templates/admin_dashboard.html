@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='prestamos_admin.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" href="{{ url_for('static', filename='imagenes/logo.png') }}" type="image/x-icon">
+</head>
+<body>
+    <div class="header-bar">
+        <div class="left-text">
+            <i class='bx bx-user-circle'></i> {{usuario}}
+        </div>
+        <span>SOLICITUDES DE DEPOSITOS</span>
+    </div>
+    
+    <div class="navbar">
+        <a href="/administrador">Inicio</a>
+        <a href="/admin_dashboard">Prestamos</a>
+        <a href="/comentarios_admin">comentarios</a>
+
+        <a href="/">Cerrar sesión</a>
+    </div>
+    
+    <div class="container">
+        
+        <!-- Barra de encabezado fija -->
+        <div class="table-header">
+            <div class="header-usuario">Usuario</div>
+            <div class="header-monto">Monto</div>
+            <div class="header-cuotas">Cuotas</div>
+            <div class="header-fecha">Fecha</div>
+            <div class="header-acciones">Acciones</div>
+        </div>
+        
+        <div class="table-container"> <!-- Contenedor para el desplazamiento -->
+            <table class="styled-table">
+                <tbody>
+                    {% for prestamo in prestamos %}
+                    <tr>
+                        <td class="cell-usuario">{{ prestamo.usuario }}</td>
+                        <td class="cell-monto">{{ prestamo.monto }}</td>
+                        <td class="cell-cuotas">{{ prestamo.cuotas }}</td>
+                        <td class="cell-fecha">{{ prestamo.fecha }}</td>
+                        <td class="cell-acciones">
+                            <form action="/aceptar_prestamo" method="POST" style="display: inline;">
+                                <input type="hidden" name="prestamo_id" value="{{ prestamo.id }}" class="btn btn-aceptar">
+                                <button type="submit" name="accion" value="aceptar" class="btn btn-aceptar">Aceptar</button>
+                            </form>
+                            <form action="/rechazar_prestamo" method="POST" style="display: inline;">
+                                <input type="hidden" name="prestamo_id" value="{{ prestamo.id }}" class="btn btn-rechazar">
+                                <button type="submit" name="accion" value="rechazar" class="btn btn-rechazar">Rechazar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- <footer>
+        <p>&copy; 2025 Tu Empresa</p>
+    </footer> -->
+</body>
+</html>
